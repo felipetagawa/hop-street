@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 // â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TILE = 80;
@@ -18,12 +18,12 @@ const STAGES = [
     {
         id: 1,
         name: 'BAIRRO TRANQUILO',
-        goalRow: 22,
-        cornTarget: 3,
-        carMin: 0.65, carMax: 1.95,
-        roadRatio: 0.4,
-        maxCarsPerLane: 2,
-        maxRoadRun: 3,
+        goalRow: 80,
+        cornTarget: 12,
+        carMin: 1.5, carMax: 3.2,
+        roadRatio: 0.65,
+        maxCarsPerLane: 4,
+        maxRoadRun: 4,
         theme: 'suburb',
         skyTop: '#5ec8e8', skyBot: '#a8e4f8',
         accent: '#7ee8a2',
@@ -31,12 +31,12 @@ const STAGES = [
     {
         id: 2,
         name: 'AVENIDA MOVIMENTADA',
-        goalRow: 30,
-        cornTarget: 5,
-        carMin: 1.05, carMax: 3.15,
-        roadRatio: 0.6,
-        maxCarsPerLane: 3,
-        maxRoadRun: 4,
+        goalRow: 120,
+        cornTarget: 20,
+        carMin: 2.0, carMax: 4.5,
+        roadRatio: 0.8,
+        maxCarsPerLane: 5,
+        maxRoadRun: 6,
         theme: 'avenue',
         skyTop: '#3a8fcc', skyBot: '#7cc8f8',
         accent: '#f5be00',
@@ -44,12 +44,12 @@ const STAGES = [
     {
         id: 3,
         name: 'HORA DO RUSH',
-        goalRow: 40,
-        cornTarget: 7,
-        carMin: 1.7, carMax: 3.95,
-        roadRatio: 0.65,
-        maxCarsPerLane: 4,
-        maxRoadRun: 5,
+        goalRow: 160,
+        cornTarget: 28,
+        carMin: 2.8, carMax: 5.8,
+        roadRatio: 0.9,
+        maxCarsPerLane: 6,
+        maxRoadRun: 8,
         theme: 'rush',
         skyTop: '#e06030', skyBot: '#f0a060',
         accent: '#ff4444',
