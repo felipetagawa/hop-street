@@ -98,6 +98,23 @@ function makeImpactParticles(seed, count = 16) {
     return particles;
 }
 
+function makeShieldParticles(seed, count = 14) {
+    const rand = mulberry32(seed);
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+        const ang = rand() * Math.PI * 2;
+        const speed = 60 + rand() * 120;
+        particles.push({
+            vx: Math.cos(ang) * speed,
+            vy: Math.sin(ang) * speed * 0.65 - 20,
+            size: 3 + (rand() * 5) | 0,
+            life: 0.3 + rand() * 0.25,
+            color: rand() > 0.5 ? '#f0d060' : '#c8a030',
+        });
+    }
+    return particles;
+}
+
 function hexToRgba(hex, alpha) {
     const n = parseInt(hex.replace('#', ''), 16);
     const r = (n >> 16) & 0xff;
@@ -673,8 +690,29 @@ function drawChicken(ctx, px, py, hopT, time = 0) {
     ctx.restore();
 }
 
-function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop = 0, stageName = '', stageCorn = 0, stageCornTarget = 0) {
-    const scoreY = 24 - Math.round(scorePop * 4);
+function drawShieldAura(ctx, px, py, hopT, time) {
+    const bounce = Math.sin(hopT * Math.PI);
+    const idle = Math.sin(time * 0.006) * 2;
+    const arc = bounce * 28;
+    const cx = px + TILE / 2;
+    const cy = py + LANE_H * 0.78 - arc - idle;
+    const pulse = 0.7 + Math.sin(time * 0.008) * 0.3;
+    const r = 28;
+    ctx.strokeStyle = `rgba(240,208,96,${0.3 * pulse})`;
+    ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.arc(cx, cy - 10, r + 6, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = `rgba(200,160,48,${0.6 * pulse})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(cx, cy - 10, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = `rgba(255,230,100,${0.5 * pulse})`;
+    for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 + time * 0.003;
+        ctx.fillRect(cx + Math.cos(a) * (r + 2) - 2, cy - 10 + Math.sin(a) * (r + 2) - 2, 4, 4);
+    }
+}
+
+function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop, stageName, stageCorn, stageCornTarget, cornBank, shieldActive) {
+    const scoreY = 24 - Math.round((scorePop || 0) * 4);
     drawPixelPanel(ctx, 24, scoreY, 120, 70, 'SCORE', score);
     drawPixelPanel(ctx, CANVAS_W - 184, 24, 160, 70, 'BEST', hiScore, true);
     
@@ -702,23 +740,50 @@ function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop = 0, stageName = '', st
     if (stageCornTarget > 0) {
         const cw = 122;
         const ch = 24;
-        const cx = CANVAS_W / 2 - cw / 2;
-        const cy = 58;
+        const bx = CANVAS_W / 2 - cw / 2;
+        const by = 58;
         ctx.fillStyle = 'rgba(0,0,0,0.42)';
-        ctx.fillRect(cx, cy, cw, ch);
+        ctx.fillRect(bx, by, cw, ch);
         ctx.strokeStyle = '#4a4a6a';
         ctx.lineWidth = 2;
-        ctx.strokeRect(cx, cy, cw, ch);
+        ctx.strokeRect(bx, by, cw, ch);
         ctx.fillStyle = '#f0bf34';
-        ctx.fillRect(cx + 8, cy + 7, 10, 10);
+        ctx.fillRect(bx + 8, by + 7, 10, 10);
         ctx.fillStyle = '#d59a1e';
-        ctx.fillRect(cx + 18, cy + 9, 3, 10);
+        ctx.fillRect(bx + 18, by + 9, 3, 10);
         ctx.fillStyle = '#6e9d35';
-        ctx.fillRect(cx + 6, cy + 14, 2, 5);
+        ctx.fillRect(bx + 6, by + 14, 2, 5);
         ctx.fillStyle = '#d0d0ff';
         ctx.font = 'bold 12px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText(`MILHO ${stageCorn}/${stageCornTarget}`, cx + 24, cy + 16);
+        ctx.fillText(`MILHO ${stageCorn}/${stageCornTarget}`, bx + 24, by + 16);
+    }
+    // ─── Corn Bank + Shield status bar ───
+    const barW = 240;
+    const barH = 28;
+    const barX = CANVAS_W / 2 - barW / 2;
+    const barY = 86;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.strokeStyle = '#4a4a6a';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barX, barY, barW, barH);
+    // Corn bank (left side)
+    ctx.fillStyle = '#f0bf34';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`BANCO: ${cornBank || 0}`, barX + 10, barY + 18);
+    // Shield status (right side)
+    const canShield = (cornBank || 0) >= 3;
+    if (shieldActive) {
+        ctx.fillStyle = '#7ee8a2';
+        ctx.fillText('ESCUDO ATIVO', barX + barW - 120, barY + 18);
+    } else if (canShield) {
+        ctx.fillStyle = '#d0d0ff';
+        ctx.fillText('SPC:ESCUDO', barX + barW - 108, barY + 18);
+    } else {
+        ctx.fillStyle = '#6a6a8a';
+        ctx.fillText('ESCUDO ---', barX + barW - 108, barY + 18);
     }
 }
 
@@ -759,6 +824,26 @@ function drawImpactFX(ctx, hit, time) {
     return false;
 }
 
+function drawShieldBreakFX(ctx, shieldBreak, time) {
+    if (!shieldBreak) return false;
+    const t = (time - shieldBreak.t0) / 1000;
+    if (t > 0.6) return true;
+    shieldBreak.particles.forEach((p) => {
+        const k = Math.min(1, t / p.life);
+        const px = shieldBreak.x + p.vx * t;
+        const py = shieldBreak.y + p.vy * t + 100 * t * t;
+        const alpha = Math.max(0, 1 - k);
+        ctx.fillStyle = hexToRgba(p.color, alpha);
+        ctx.fillRect(px, py, p.size, p.size);
+    });
+    const flash = Math.max(0, 1 - t / 0.2) * 0.25;
+    if (flash > 0) {
+        ctx.fillStyle = `rgba(240,208,80,${flash})`;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+    return false;
+}
+
 function laneY(row, camRow, CANVAS_H) {
     return Math.round(CANVAS_H * PLAYER_Y_RATIO - (row - camRow + 1) * SLAB_STEP + SLAB_STEP * 0.5);
 }
@@ -777,6 +862,7 @@ export default function Game() {
     const [hiScore, setHiScore] = useState(0);
     const [stageCorn, setStageCorn] = useState(0);
     const [totalCorn, setTotalCorn] = useState(0);
+    const [cornBank, setCornBank] = useState(0);
 
     const stageCfg = STAGES[stageIdx];
 
@@ -795,7 +881,7 @@ export default function Game() {
         return () => window.removeEventListener('resize', updateDims);
     }, [updateDims]);
 
-    const makeInitialState = useCallback((sIdx, w, cols, carryTotalCorn = 0) => {
+    const makeInitialState = useCallback((sIdx, w, cols, carryTotalCorn = 0, carryCornBank = 0) => {
         const cfg = STAGES[sIdx];
         const lanes = [];
         for (let i = 0; i < 80; i++) {
@@ -813,14 +899,17 @@ export default function Game() {
                 targetCol: Math.floor(cols / 2),
                 targetRow: 1,
                 inputBuffer: null,
+                shield: false,
+                invincibleUntil: 0,
             },
             score: 0,
             stageCorn: 0,
+            cornBank: carryCornBank,
             totalCorn: carryTotalCorn,
             maxRow: 1,
             frozen: false,
             cameraRow: 1,
-            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null },
+            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null, shieldBreak: null, cornWarningUntil: 0, shieldWarningUntil: 0 },
         };
     }, []);
 
@@ -838,21 +927,23 @@ export default function Game() {
     }, [dims.w]);
 
     const resetGame = useCallback(() => {
-        stateRef.current = makeInitialState(0, dims.w, dims.cols, 0);
+        stateRef.current = makeInitialState(0, dims.w, dims.cols, 0, 0);
         setScore(0);
         setStageIdx(0);
         setStageCorn(0);
         setTotalCorn(0);
+        setCornBank(0);
         setPhase('playing');
     }, [dims.w, dims.cols, makeInitialState]);
 
     const advanceStage = useCallback(() => {
         const nextIdx = stageIdx + 1;
         const s = stateRef.current;
-        stateRef.current = makeInitialState(nextIdx, dims.w, dims.cols, s.totalCorn);
+        stateRef.current = makeInitialState(nextIdx, dims.w, dims.cols, s.totalCorn, s.cornBank);
         setScore(0);
         setStageCorn(0);
         setTotalCorn(stateRef.current.totalCorn);
+        setCornBank(stateRef.current.cornBank);
         setStageIdx(nextIdx);
         setPhase('playing');
     }, [stageIdx, dims.w, dims.cols, makeInitialState]);
@@ -914,6 +1005,7 @@ export default function Game() {
                     landedLane.cornTaken = true;
                     s.stageCorn += 1;
                     s.totalCorn += 1;
+                    s.cornBank += 1;
                     s.fx.cornPopUntil = time + 260;
                     const collectY = laneY(p.row, s.cameraRow, h) + LANE_H * 0.54;
                     const collectX = p.col * TILE + TILE / 2;
@@ -921,14 +1013,19 @@ export default function Game() {
                     s.fx.cornBurst = { t0: time, x: collectX, y: collectY, particles: makeCornParticles(cseed) };
                     setStageCorn(s.stageCorn);
                     setTotalCorn(s.totalCorn);
+                    setCornBank(s.cornBank);
                 }
                 // Goal reached?
                 if (p.row >= cfg.goalRow && !s.frozen) {
-                    s.frozen = true;
-                    if (stageIdx >= STAGES.length - 1) {
-                        setPhase('victory');
+                    if (s.stageCorn < cfg.cornTarget) {
+                        s.fx.cornWarningUntil = time + 1500;
                     } else {
-                        setPhase('stageclear');
+                        s.frozen = true;
+                        if (stageIdx >= STAGES.length - 1) {
+                            setPhase('victory');
+                        } else {
+                            setPhase('stageclear');
+                        }
                     }
                 }
             }
@@ -938,15 +1035,23 @@ export default function Game() {
 
         // 3. Continuous Collision Detection (Every Frame)
         if (!s.frozen && phase === 'playing') {
-            if (!collides(s, w)) {
+            if (!isSafe(s, w, time)) {
                 const impactCol = p.col + (p.targetCol - p.col) * p.hopT;
                 const impactRow = p.row + (p.targetRow - p.row) * p.hopT;
                 const impactY = laneY(impactRow, s.cameraRow, h) + LANE_H * 0.74;
                 const impactX = impactCol * TILE + TILE / 2;
-                const seed = (((p.row + 1) * 92821) ^ ((p.col + 7) * 68917) ^ ((time | 0) * 131)) >>> 0;
-                s.fx.hit = { t0: time, x: impactX, y: impactY, particles: makeImpactParticles(seed) };
-                s.frozen = true;
-                setPhase('gameover');
+                
+                if (p.shield) {
+                    p.shield = false;
+                    p.invincibleUntil = time + 1000;
+                    const cseed = (((p.row + 3) * 15331) ^ ((time | 0) * 37)) >>> 0;
+                    s.fx.shieldBreak = { t0: time, x: impactX, y: impactY, particles: makeShieldParticles(cseed) };
+                } else {
+                    const seed = (((p.row + 1) * 92821) ^ ((p.col + 7) * 68917) ^ ((time | 0) * 131)) >>> 0;
+                    s.fx.hit = { t0: time, x: impactX, y: impactY, particles: makeImpactParticles(seed) };
+                    s.frozen = true;
+                    setPhase('gameover');
+                }
             }
         }
 
@@ -980,18 +1085,43 @@ export default function Game() {
         const ac = p.col + (p.targetCol - p.col) * p.hopT;
         const ar = p.row + (p.targetRow - p.row) * p.hopT;
         const csy = laneY(ar, s.cameraRow, h);
-        drawChicken(ctx, ac * TILE, csy, p.hopT < 1 ? p.hopT : 1, time);
+        
+        if (p.shield) drawShieldAura(ctx, ac * TILE, csy, p.hopT < 1 ? p.hopT : 1, time);
+        
+        if (p.invincibleUntil > time) {
+            if (Math.floor(time / 100) % 2 === 0) {
+                drawChicken(ctx, ac * TILE, csy, p.hopT < 1 ? p.hopT : 1, time);
+            }
+        } else {
+            drawChicken(ctx, ac * TILE, csy, p.hopT < 1 ? p.hopT : 1, time);
+        }
 
         const scorePop = s.fx.scorePopUntil > time ? (s.fx.scorePopUntil - time) / 260 : 0;
-        drawHUD(ctx, s.score, hiRef.current, w, scorePop, `FASE ${cfg.id} - ${cfg.name}`, s.stageCorn, cfg.cornTarget);
+        drawHUD(ctx, s.score, hiRef.current, w, scorePop, `FASE ${cfg.id} - ${cfg.name}`, s.stageCorn, cfg.cornTarget, s.cornBank, p.shield);
+        
+        if (s.fx.cornWarningUntil > time) {
+            ctx.fillStyle = '#ff4455';
+            ctx.font = 'bold 20px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`COLETE MAIS ${cfg.cornTarget - s.stageCorn} MILHO!`, w / 2, h / 2 - 40);
+        }
+        if (s.fx.shieldWarningUntil > time) {
+            ctx.fillStyle = '#f0bf34';
+            ctx.font = 'bold 20px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`MILHO INSUFICIENTE`, w / 2, h / 2 - 40);
+        }
+
+        if (s.fx.shieldBreak && drawShieldBreakFX(ctx, s.fx.shieldBreak, time)) s.fx.shieldBreak = null;
         if (s.fx.cornBurst && drawCornFX(ctx, s.fx.cornBurst, time)) s.fx.cornBurst = null;
         if (s.fx.hit && drawImpactFX(ctx, s.fx.hit, time)) s.fx.hit = null;
 
         rafRef.current = requestAnimationFrame(loop);
     }, [dims, phase, stageIdx, triggerMove]);
 
-    function collides(s, w) {
+    function isSafe(s, w, time) {
         const p = s.player;
+        if (p.invincibleUntil > time) return true;
         const ar = p.row + (p.targetRow - p.row) * p.hopT;
         const checkRow = Math.round(ar);
         const ln = s.lanes[checkRow];
@@ -1015,6 +1145,19 @@ export default function Game() {
             if (phase === 'stageclear') { if (key === ' ' || key === 'enter') advanceStage(); return; }
             if (phase === 'victory') { if (key === ' ' || key === 'enter') resetGame(); return; }
             if (s.frozen) return;
+
+            // Shield activation
+            if (key === ' ' && phase === 'playing') {
+                if (s.cornBank >= 3 && !s.player.shield) {
+                    s.cornBank -= 3;
+                    s.player.shield = true;
+                    setCornBank(s.cornBank);
+                } else if (!s.player.shield) {
+                    s.fx.shieldWarningUntil = performance.now() + 1000;
+                }
+                return;
+            }
+
             if (isGameKey) {
                 e.preventDefault();
                 if (s.player.hopT < 1) { s.player.inputBuffer = key; }
