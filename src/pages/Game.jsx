@@ -10,7 +10,7 @@ import {
     playVictory,
 } from '../audio';
 
-// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Constants Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const TILE = 80;
 const LANE_H = 56;
 const SLAB_D = 14;
@@ -23,7 +23,7 @@ const CAR_MAX = 3.0;
 
 const PLAYER_Y_RATIO = 0.62;
 
-// â”€â”€â”€ Stage Definitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Stage Definitions Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const STAGES = [
     {
         id: 1,
@@ -66,7 +66,7 @@ const STAGES = [
     },
 ];
 
-// â”€â”€â”€ Visual Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Visual Helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function shade(hex, amt) {
     const n = parseInt(hex.replace('#', ''), 16);
     const r = Math.min(255, Math.max(0, (n >> 16) + amt));
@@ -205,7 +205,7 @@ function drawPixelPanel(ctx, x, y, w, h, label, value, isRight = false, accent =
     ctx.fillText(value, isRight ? x + w - 14 : x + 14, y + h - 14);
 }
 
-// ─── Ranking Helpers ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Ranking Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const RANKING_KEY = 'hopStreetRanking';
 
 function getRanking() {
@@ -250,7 +250,7 @@ function clearRanking() {
     return [];
 }
 
-// ─── Lane generation ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Lane generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function makeLane(idx, CANVAS_W, stageCfg = STAGES[0]) {
     if (idx < 3) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, 9), corn: null, cornTaken: false };
     if (idx % 6 === 0) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), corn: null, cornTaken: false };
@@ -311,7 +311,7 @@ function buildLanes(n, CANVAS_W, stageCfg = STAGES[0]) {
     return Array.from({ length: n }, (_, i) => makeLane(i, CANVAS_W, stageCfg));
 }
 
-// â”€â”€â”€ Draw: sky + ground background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: sky + ground background Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function drawBg(ctx, CANVAS_W, CANVAS_H, stageCfg = STAGES[0]) {
     const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H * 0.55);
     sky.addColorStop(0, stageCfg.skyTop);
@@ -322,7 +322,7 @@ function drawBg(ctx, CANVAS_W, CANVAS_H, stageCfg = STAGES[0]) {
     ctx.fillRect(0, CANVAS_H * 0.5, CANVAS_W, CANVAS_H * 0.5);
 }
 
-// â”€â”€â”€ Draw: destination row marker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: destination row marker Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     // Safe zone base
     ctx.fillStyle = '#e8d88a';
@@ -343,7 +343,7 @@ function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     }
 
     // Banner label
-    const labels = ['FASE CONCLUÍDA - CONTINUE', 'ÚLTIMA ETAPA À FRENTE', 'FESTIVAL DO MILHO'];
+    const labels = ['FASE CONCLUÃDA - CONTINUE', 'ÃšLTIMA ETAPA Ã€ FRENTE', 'FESTIVAL DO MILHO'];
     const stageIdx = STAGES.indexOf(stageCfg);
     const msg = labels[Math.max(0, Math.min(stageIdx, 2))];
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -603,7 +603,7 @@ function drawStageFlavor(ctx, sy, CANVAS_W, r, stageCfg) {
     }
 }
 
-// â”€â”€â”€ Draw: road lane slab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: road lane slab Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function drawRoadLane(ctx, sy, shd, CANVAS_W, r) {
     const top = shd === 0 ? '#525252' : '#474747';
     const front = shd === 0 ? '#282828' : '#202020';
@@ -870,6 +870,56 @@ function drawShieldAura(ctx, px, py, hopT, time) {
     }
 }
 
+function drawRoundedRectPath(ctx, x, y, w, h, r) {
+    const radius = Math.min(r, w / 2, h / 2);
+    if (typeof ctx.roundRect === 'function') {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, radius);
+        return;
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + w - radius, y);
+    ctx.arc(x + w - radius, y + radius, radius, -Math.PI / 2, 0);
+    ctx.lineTo(x + w, y + h - radius);
+    ctx.arc(x + w - radius, y + h - radius, radius, 0, Math.PI / 2);
+    ctx.lineTo(x + radius, y + h);
+    ctx.arc(x + radius, y + h - radius, radius, Math.PI / 2, Math.PI);
+    ctx.lineTo(x, y + radius);
+    ctx.arc(x + radius, y + radius, radius, Math.PI, (Math.PI * 3) / 2);
+}
+
+function drawHudPill(ctx, x, y, w, h, accent, fill, dimmed = false, glowing = false) {
+    const body = dimmed ? 'rgba(22,26,44,0.78)' : fill;
+    const border = dimmed ? '#4c4f68' : accent;
+    drawRoundedRectPath(ctx, x + 3, y + 4, w, h, h / 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.38)';
+    ctx.fill();
+
+    if (glowing) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(255,210,96,0.65)';
+        ctx.shadowBlur = 12;
+        drawRoundedRectPath(ctx, x, y, w, h, h / 2);
+        ctx.fillStyle = body;
+        ctx.fill();
+        ctx.restore();
+    } else {
+        drawRoundedRectPath(ctx, x, y, w, h, h / 2);
+        ctx.fillStyle = body;
+        ctx.fill();
+    }
+
+    drawRoundedRectPath(ctx, x, y, w, h, h / 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = border;
+    ctx.stroke();
+
+    drawRoundedRectPath(ctx, x + 2, y + 2, w - 4, h / 2 - 2, h / 2.8);
+    ctx.fillStyle = dimmed ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.08)';
+    ctx.fill();
+}
+
 function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop, stageName, stageCorn, stageCornTarget, cornBank, shieldActive) {
     const scoreY = 24 - Math.round((scorePop || 0) * 4);
     drawPixelPanel(ctx, 24, scoreY, 128, 72, 'SCORE', score, false, '#ffe066');
@@ -890,43 +940,39 @@ function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop, stageName, stageCorn, 
         ctx.fillText(stageName, CANVAS_W / 2, 44);
         ctx.textAlign = 'left';
     }
+
+    const canShield = (cornBank || 0) >= 3;
+    const pillY = 62;
+    const pillH = 30;
+    const pillGap = 8;
+    const pillW = 146;
+    const rowW = (pillW * 3) + (pillGap * 2);
+    const rowX = CANVAS_W / 2 - rowW / 2;
+
     if (stageCornTarget > 0) {
-        const cw = 154;
-        const ch = 30;
-        const bx = CANVAS_W / 2 - cw - 6;
-        const by = 62;
-        drawPixelFrame(ctx, bx, by, cw, ch, '#f0bf34', '#15172c');
-        drawCornIcon(ctx, bx + 12, by + 6, 0.62);
+        const metaComplete = stageCorn >= stageCornTarget;
+        drawHudPill(ctx, rowX, pillY, pillW, pillH, metaComplete ? '#7ee8a2' : '#f0bf34', 'rgba(16,21,38,0.92)', false, false);
+        drawCornIcon(ctx, rowX + 10, pillY + 6, 0.62);
         ctx.fillStyle = '#fff7dc';
         ctx.font = 'bold 13px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText(`META ${stageCorn}/${stageCornTarget}`, bx + 40, by + 20);
+        ctx.fillText(`${stageCorn}/${stageCornTarget}`, rowX + 38, pillY + 20);
     }
-    // ─── Corn Bank + Shield status bar ───
-    const barW = 218;
-    const barH = 30;
-    const barX = CANVAS_W / 2 + 6;
-    const barY = 62;
-    drawPixelFrame(ctx, barX, barY, barW, barH, shieldActive ? '#7ee8a2' : '#4a4a6a', '#15172c');
-    // Corn bank (left side)
-    drawCornIcon(ctx, barX + 12, barY + 6, 0.62);
+
+    const bankX = rowX + pillW + pillGap;
+    drawHudPill(ctx, bankX, pillY, pillW, pillH, '#f0bf34', 'rgba(16,21,38,0.92)', false, false);
+    drawCornIcon(ctx, bankX + 10, pillY + 6, 0.62);
     ctx.fillStyle = '#ffe066';
     ctx.font = 'bold 13px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(`BANCO ${cornBank || 0}`, barX + 40, barY + 20);
-    // Shield status (right side)
-    const canShield = (cornBank || 0) >= 3;
-    drawShieldIcon(ctx, barX + 110, barY + 5, 0.62, shieldActive || canShield);
-    if (shieldActive) {
-        ctx.fillStyle = '#7ee8a2';
-        ctx.fillText('ATIVO', barX + 138, barY + 20);
-    } else if (canShield) {
-        ctx.fillStyle = '#eef0ff';
-        ctx.fillText('ESP 3', barX + 138, barY + 20);
-    } else {
-        ctx.fillStyle = '#7b7f9d';
-        ctx.fillText('ESP 3', barX + 138, barY + 20);
-    }
+    ctx.fillText(`${cornBank || 0}`, bankX + 38, pillY + 20);
+
+    const shieldX = bankX + pillW + pillGap;
+    const shieldDimmed = !shieldActive && !canShield;
+    drawHudPill(ctx, shieldX, pillY, pillW, pillH, shieldActive ? '#f0d060' : '#7c7f9c', 'rgba(16,21,38,0.92)', shieldDimmed, shieldActive);
+    drawShieldIcon(ctx, shieldX + 10, pillY + 5, 0.62, shieldActive || canShield);
+    ctx.fillStyle = shieldDimmed ? '#7b7f9d' : (shieldActive ? '#ffe9a6' : '#eef0ff');
+    ctx.fillText('3', shieldX + 38, pillY + 20);
 }
 
 function drawCornFX(ctx, cornFx, time) {
@@ -990,7 +1036,7 @@ function laneY(row, camRow, CANVAS_H) {
     return Math.round(CANVAS_H * PLAYER_Y_RATIO - (row - camRow + 1) * SLAB_STEP + SLAB_STEP * 0.5);
 }
 
-// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Main Component Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function normalizeMoveKey(key) {
     const k = key.toLowerCase();
     if (k === 'arrowup' || k === 'w' || k === 'up') return 'up';
@@ -1012,6 +1058,7 @@ export default function Game() {
     const shakeRef = useRef({ frames: 0, intensity: 0 });
     const flashRef = useRef({ frames: 0, color: '' });
     const nearMissRef = useRef({ show: false, timer: 0, cooldown: 0, x: 0, y: 0 });
+    const startIdleTimeoutRef = useRef(null);
 
     const [dims, setDims] = useState({ w: window.innerWidth, h: window.innerHeight, cols: 9 });
     const [phase, setPhase] = useState('start');       // start | playing | stageclear | gameover | victory
@@ -1024,6 +1071,7 @@ export default function Game() {
 
     const [playerName, setPlayerName] = useState('');
     const [rankingSaved, setRankingSaved] = useState(false);
+    const [startIdle, setStartIdle] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
     const [rankingList, setRankingList] = useState([]);
 
@@ -1057,6 +1105,26 @@ export default function Game() {
             setRankingList(getRanking());
         }
     }, [phase, score, totalCorn]);
+
+    useEffect(() => {
+        if (phase !== 'start') {
+            setStartIdle(false);
+            if (startIdleTimeoutRef.current) {
+                clearTimeout(startIdleTimeoutRef.current);
+                startIdleTimeoutRef.current = null;
+            }
+            return;
+        }
+        setStartIdle(false);
+        if (startIdleTimeoutRef.current) clearTimeout(startIdleTimeoutRef.current);
+        startIdleTimeoutRef.current = setTimeout(() => setStartIdle(true), 15000);
+        return () => {
+            if (startIdleTimeoutRef.current) {
+                clearTimeout(startIdleTimeoutRef.current);
+                startIdleTimeoutRef.current = null;
+            }
+        };
+    }, [phase]);
 
     const makeInitialState = useCallback((sIdx, w, cols, carryTotalCorn = 0, carryCornBank = 0) => {
         const cfg = STAGES[sIdx];
@@ -1190,6 +1258,39 @@ export default function Game() {
         const s = stateRef.current;
         const { w, h } = dims;
         const cfg = STAGES[stageIdx];
+
+        if (phase === 'start') {
+            drawBg(ctx, w, h, STAGES[0]);
+            const laneRows = Math.ceil(h / SLAB_STEP) + 6;
+            for (let r = 0; r < laneRows; r++) {
+                const sy = h - ((r + 1) * SLAB_STEP);
+                if (r % 4 === 1 || r % 4 === 2) drawRoadLane(ctx, sy, r % 2, w, r);
+                else drawGrassLane(ctx, sy, r % 2, [], w, r);
+            }
+
+            const decoCars = [
+                { lane: 1, dir: 1, speed: 0.16, color: '#4f7ecf', variant: 'van', offset: 140 },
+                { lane: 2, dir: -1, speed: 0.2, color: '#d45f28', variant: 'pickup', offset: 420 },
+                { lane: 5, dir: 1, speed: 0.24, color: '#6e4fbd', variant: 'compact', offset: 760 },
+            ];
+            decoCars.forEach((car) => {
+                const sy = h - ((car.lane + 1) * SLAB_STEP);
+                const span = w + CAR_W * 2;
+                const progress = (time * car.speed + car.offset) % span;
+                const x = car.dir > 0 ? (-CAR_W + progress) : (w + CAR_W - progress);
+                drawCar(ctx, x, sy, car.dir, car.color, car.variant);
+            });
+
+            const poseTick = Math.floor(Date.now() / 300) % 2;
+            const chickenRow = 0;
+            const chickenSy = h - ((chickenRow + 1) * SLAB_STEP);
+            const chickenX = Math.floor(w * 0.28) + (poseTick ? 6 : 0);
+            const chickenY = chickenSy + (poseTick ? -2 : 0);
+            drawChicken(ctx, chickenX, chickenY, 1, time);
+
+            rafRef.current = requestAnimationFrame(loop);
+            return;
+        }
 
         // 1. Update Cars
         if (!s.frozen) {
@@ -1532,48 +1633,101 @@ export default function Game() {
     }, [phase, loop]);
 
     const nextStage = STAGES[stageIdx + 1];
+    const DeadChickenBadge = () => (
+        <svg width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="Galinha derrotada">
+            <rect x="14" y="12" width="20" height="20" rx="3" fill="#f4f6ff" />
+            <rect x="18" y="8" width="4" height="5" fill="#ef4b4b" />
+            <rect x="22" y="6" width="4" height="6" fill="#ff6b5b" />
+            <rect x="26" y="8" width="4" height="5" fill="#ef4b4b" />
+            <rect x="32" y="18" width="6" height="4" fill="#f7b547" />
+            <rect x="37" y="19" width="2" height="2" fill="#d98c2f" />
+            <rect x="18" y="20" width="2" height="2" fill="#1c2138" />
+            <rect x="20" y="22" width="2" height="2" fill="#1c2138" />
+            <rect x="20" y="20" width="2" height="2" fill="#1c2138" />
+            <rect x="18" y="22" width="2" height="2" fill="#1c2138" />
+            <rect x="26" y="20" width="2" height="2" fill="#1c2138" />
+            <rect x="28" y="22" width="2" height="2" fill="#1c2138" />
+            <rect x="28" y="20" width="2" height="2" fill="#1c2138" />
+            <rect x="26" y="22" width="2" height="2" fill="#1c2138" />
+            <rect x="20" y="32" width="3" height="6" fill="#f7b547" />
+            <rect x="25" y="32" width="3" height="6" fill="#f7b547" />
+            <rect x="12" y="17" width="3" height="11" fill="#e2e5f8" />
+            <rect x="33" y="17" width="3" height="11" fill="#e2e5f8" />
+        </svg>
+    );
     const renderRankingRows = (limit = 10, compact = false) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? 5 : 8, width: '100%' }}>
-            {rankingList.slice(0, limit).map((r, i) => (
-                <div key={`${r.name}-${r.score}-${r.date}-${i}`} style={{
+            {rankingList.slice(0, limit).map((r, i) => {
+                const top3Borders = ['rgba(245,190,0,0.9)', 'rgba(192,198,220,0.85)', 'rgba(205,127,50,0.9)'];
+                const top3Bg = ['rgba(245,190,0,0.18)', 'rgba(192,198,220,0.13)', 'rgba(205,127,50,0.14)'];
+                const isTop3 = i < 3;
+                const rowStyle = {
                     fontFamily: 'monospace',
-                    fontSize: compact ? 11 : (i < 3 ? 14 : 13),
+                    fontSize: compact ? 11 : (i === 0 ? 15 : i < 3 ? 14 : 13),
                     color: i < 3 ? '#fff4b0' : '#c8cae8',
-                    background: i < 3 ? 'rgba(245,190,0,0.1)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${i < 3 ? 'rgba(245,190,0,0.45)' : 'rgba(255,255,255,0.08)'}`,
+                    background: isTop3 ? top3Bg[i] : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${isTop3 ? top3Borders[i] : 'rgba(255,255,255,0.08)'}`,
                     borderRadius: compact ? 6 : 8,
                     padding: compact ? '5px 7px' : '7px 9px',
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'center' }}>
-                        <span style={{ fontWeight: i < 3 ? 900 : 700 }}>
-                            <span style={{ display: 'inline-block', minWidth: compact ? 20 : 24 }}>{['🥇', '🥈', '🥉'][i] || `${i + 1}.`}</span>
-                            {r.name}
-                        </span>
-                        <span style={{ fontWeight: 900, color: i < 3 ? '#ffe066' : '#eef0ff' }}>{r.score}</span>
+                    boxShadow: i === 0 ? '0 8px 0 #05070f, 0 0 18px rgba(245,190,0,0.24)' : '0 5px 0 #05070f',
+                };
+                return (
+                    <div key={`${r.name}-${r.score}-${r.date}-${i}`} style={rowStyle}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'center' }}>
+                            <span style={{ fontWeight: i < 3 ? 900 : 700 }}>
+                                <span style={{ display: 'inline-block', minWidth: compact ? 20 : 24 }}>{['ðŸ¥‡', 'ðŸ¥ˆ', 'ðŸ¥‰'][i] || `${i + 1}.`}</span>
+                                {r.name}
+                            </span>
+                            <span style={{ fontWeight: 900, color: i < 3 ? '#ffe066' : '#eef0ff' }}>{r.score}</span>
+                        </div>
+                        <div style={{ color: '#8589ad', fontSize: compact ? 9 : 10, marginTop: compact ? 1 : 3 }}>
+                            {r.stage} | {r.corn} milhos{r.date ? ` | ${r.date}` : ''}
+                        </div>
                     </div>
-                    <div style={{ color: '#8589ad', fontSize: compact ? 9 : 10, marginTop: compact ? 1 : 3 }}>
-                        {r.stage} | {r.corn} milhos{r.date ? ` | ${r.date}` : ''}
-                    </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 
     return (
         <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#0d1117', userSelect: 'none', overflow: 'hidden' }}>
+            <style>{`
+                @keyframes panelDrop {
+                    0% { opacity: 0; transform: translateY(-22px) scale(0.98); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                @keyframes hopTitlePulse {
+                    0% { transform: translateY(0) scale(1); }
+                    50% { transform: translateY(-2px) scale(1.015); }
+                    100% { transform: translateY(0) scale(1); }
+                }
+                @keyframes startPromptBlink {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.45; }
+                }
+                @keyframes idlePromptPulse {
+                    0% { opacity: 0.72; transform: scale(1); }
+                    50% { opacity: 1; transform: scale(1.03); }
+                    100% { opacity: 0.72; transform: scale(1); }
+                }
+            `}</style>
             <canvas ref={canvasRef} width={dims.w} height={dims.h} style={{ display: 'block' }} />
 
             {phase !== 'playing' && (
-                <div style={OVL}>
+                <div style={{ ...OVL, ...(phase === 'gameover' ? GAME_OVER_OVL : null) }}>
                     {phase === 'start' && (
                         <div style={{...PANEL, maxWidth: 980, padding: '34px 46px'}}>
-                            <div style={{ ...TITLE, fontSize: 58, color: '#ffe066', marginBottom: 4 }}>HOP STREET</div>
+                            <div style={{ ...TITLE, fontSize: 58, color: '#ffe066', marginBottom: 4, animation: 'hopTitlePulse 2.4s ease-in-out infinite' }}>HOP STREET</div>
                             <p style={{ color: '#eef0ff', fontFamily: 'monospace', fontSize: 17, marginBottom: 8, textAlign: 'center', lineHeight: 1.45 }}>
                                 Atravesse as ruas, colete milho e chegue ao <b style={{ color: '#ffe066' }}>Festival do Milho</b>.
                             </p>
-                            <div style={{ color: '#7ee8a2', fontFamily: 'monospace', fontWeight: 900, fontSize: 16, marginTop: 6, textAlign: 'center' }}>
-                                Pressione ESPAÇO ou ENTER para começar
-                            </div>
+                            {!startIdle ? (
+                                <div style={{ color: '#7ee8a2', fontFamily: 'monospace', fontWeight: 900, fontSize: 16, marginTop: 6, textAlign: 'center', animation: 'startPromptBlink 1.2s ease-in-out infinite' }}>
+                                    Pressione ESPACO ou ENTER para comecar
+                                </div>
+                            ) : (
+                                <div style={{ color: '#ffe066', fontFamily: 'monospace', fontWeight: 900, fontSize: 16, marginTop: 6, textAlign: 'center', animation: 'idlePromptPulse 1.2s ease-in-out infinite', padding: '4px 10px', border: '1px solid rgba(245,190,0,0.45)', borderRadius: 8, background: 'rgba(0,0,0,0.2)' }}>{'\u{1F440} Pressione ENTER para jogar'}</div>
+                            )}
                             
                             <div style={{ display: 'flex', gap: 34, marginTop: 24, textAlign: 'left', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'stretch' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minWidth: 320 }}>
@@ -1588,7 +1742,7 @@ export default function Game() {
                                     <div style={{ background: '#0b0d18', padding: '16px 20px', borderRadius: 10, border: '2px solid #33364f', marginBottom: 22, width: '100%', boxShadow: '0 8px 0 #05070f' }}>
                                         <h3 style={{ color: '#fff7dc', fontFamily: 'monospace', marginBottom: 12, fontSize: 16, textAlign: 'center' }}>CONTROLES</h3>
                                         <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#ffe066' }}>WASD ou Setas:</b> mover</p>
-                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#7ee8a2' }}>ESPAÇO:</b> Escudo de Palha</p>
+                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#7ee8a2' }}>ESPAÃ‡O:</b> Escudo de Palha</p>
                                         <p style={{ color: '#f0bf34', fontFamily: 'monospace', fontSize: 13, marginBottom: 0 }}>Colete milho para usar escudo.</p>
                                     </div>
                                     <button style={{ ...BTN, minWidth: 260 }} onClick={() => setPhase('playing')}>JOGAR AGORA</button>
@@ -1616,11 +1770,11 @@ export default function Game() {
                     )}
                     {phase === 'stageclear' && (
                         <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 540 }}>
-                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 34, marginBottom: 8 }}>FASE CONCLUÍDA!</div>
+                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 34, marginBottom: 8 }}>FASE CONCLUÃDA!</div>
                             <div style={{ color: '#fff7dc', fontFamily: 'monospace', fontSize: 18, margin: '4px 0 6px', fontWeight: 900 }}>FASE {stageCfg.id} - {stageCfg.name}</div>
                             {nextStage && (
                                 <div style={{ color: '#aeb2d8', fontFamily: 'monospace', fontSize: 14, marginBottom: 14, textAlign: 'center' }}>
-                                    Próxima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
+                                    PrÃ³xima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
                                 </div>
                             )}
                             <div style={{ background: '#101225', border: '2px solid #f0bf34', borderRadius: 10, padding: '10px 20px', marginBottom: 10, minWidth: 260 }}>
@@ -1629,18 +1783,19 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: stageCorn >= stageCfg.cornTarget ? '#7ee8a2' : '#aeb2d8', fontFamily: 'monospace', fontSize: 13, marginBottom: 14, fontWeight: 700 }}>
-                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na próxima para bônus'}
+                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na prÃ³xima para bÃ´nus'}
                             </div>
                             <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={advanceStage}>CONTINUAR</button>
-                            <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>
+                            <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>
                         </div>
                     )}
                     {phase === 'gameover' && (
-                        <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 620 }}>
+                        <div style={{ ...PANEL, ...COMPACT_PANEL, ...GAME_OVER_PANEL, maxWidth: 620 }}>
+                            <div style={{ marginBottom: 6 }}><DeadChickenBadge /></div>
                             <div style={{ ...TITLE, color: '#ff4455', fontSize: 40, marginBottom: 4 }}>GAME OVER</div>
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
-                                    <span style={STAT_LABEL}>FASE ALCANÇADA</span>
+                                    <span style={STAT_LABEL}>FASE ALCANÃ‡ADA</span>
                                     <b style={{ color: stageCfg.accent }}>FASE {stageCfg.id}</b>
                                     <small>{stageCfg.name}</small>
                                 </div>
@@ -1651,7 +1806,7 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
-                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                                PontuaÃ§Ã£o Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
                             
                             {!rankingSaved ? (
@@ -1671,7 +1826,7 @@ export default function Game() {
                                 </div>
                             ) : (
                                 <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÃ‡ÃƒO SALVA!</h4>
                                     <div style={FINAL_RANKING_BOX}>
                                         {renderRankingRows(5, true)}
                                     </div>
@@ -1679,20 +1834,20 @@ export default function Game() {
                             )}
 
                             {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
-                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>}
                         </div>
                     )}
                     {phase === 'victory' && (
                         <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 640 }}>
                             <div style={{ ...TITLE, color: '#f5be00', fontSize: 36, marginBottom: 6 }}>FESTIVAL DO MILHO!</div>
                             <div style={{ color: '#eef0ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 12, textAlign: 'center' }}>
-                                Vitória! Você concluiu todas as fases.
+                                VitÃ³ria! VocÃª concluiu todas as fases.
                             </div>
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
-                                    <span style={STAT_LABEL}>ÚLTIMA FASE</span>
+                                    <span style={STAT_LABEL}>ÃšLTIMA FASE</span>
                                     <b style={{ color: stageCfg.accent }}>{stageCfg.name}</b>
-                                    <small>festival alcançado</small>
+                                    <small>festival alcanÃ§ado</small>
                                 </div>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
                                     <span style={STAT_LABEL}>MILHOS</span>
@@ -1701,7 +1856,7 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
-                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                                PontuaÃ§Ã£o Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
 
                             {!rankingSaved ? (
@@ -1721,7 +1876,7 @@ export default function Game() {
                                 </div>
                             ) : (
                                 <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÃ‡ÃƒO SALVA!</h4>
                                     <div style={FINAL_RANKING_BOX}>
                                         {renderRankingRows(5, true)}
                                     </div>
@@ -1729,7 +1884,7 @@ export default function Game() {
                             )}
 
                             {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
-                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>}
                         </div>
                     )}
                 </div>
@@ -1780,6 +1935,9 @@ const OVL = {
     padding: 16,
     boxSizing: 'border-box',
 };
+const GAME_OVER_OVL = {
+    background: 'radial-gradient(circle at 50% 34%, rgba(110,20,26,0.42), rgba(18,6,8,0.86) 62%, rgba(6,0,0,0.94))',
+};
 const PANEL = {
     background: '#0f1923',
     border: '4px solid #eef0ff',
@@ -1793,6 +1951,9 @@ const PANEL = {
 };
 const COMPACT_PANEL = {
     padding: '26px 34px',
+};
+const GAME_OVER_PANEL = {
+    animation: 'panelDrop 300ms ease-out',
 };
 const TITLE = {
     fontFamily: 'monospace', fontWeight: 900, fontSize: 48, color: '#fff',
@@ -1840,3 +2001,5 @@ const FINAL_RANKING_BOX = {
     maxHeight: 220,
     overflowY: 'auto',
 };
+
+
