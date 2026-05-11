@@ -10,7 +10,7 @@ import {
     playVictory,
 } from '../audio';
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Constants Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Constants
 const TILE = 80;
 const LANE_H = 56;
 const SLAB_D = 14;
@@ -23,7 +23,7 @@ const CAR_MAX = 3.0;
 
 const PLAYER_Y_RATIO = 0.62;
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Stage Definitions Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Stage definitions
 const STAGES = [
     {
         id: 1,
@@ -66,7 +66,7 @@ const STAGES = [
     },
 ];
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Visual Helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Visual helpers
 function shade(hex, amt) {
     const n = parseInt(hex.replace('#', ''), 16);
     const r = Math.min(255, Math.max(0, (n >> 16) + amt));
@@ -311,7 +311,7 @@ function buildLanes(n, CANVAS_W, stageCfg = STAGES[0]) {
     return Array.from({ length: n }, (_, i) => makeLane(i, CANVAS_W, stageCfg));
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: sky + ground background Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Draw: sky + ground background
 function drawBg(ctx, CANVAS_W, CANVAS_H, stageCfg = STAGES[0]) {
     const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H * 0.55);
     sky.addColorStop(0, stageCfg.skyTop);
@@ -322,7 +322,7 @@ function drawBg(ctx, CANVAS_W, CANVAS_H, stageCfg = STAGES[0]) {
     ctx.fillRect(0, CANVAS_H * 0.5, CANVAS_W, CANVAS_H * 0.5);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: destination row marker Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Draw: destination row marker
 function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     // Safe zone base
     ctx.fillStyle = '#e8d88a';
@@ -343,7 +343,7 @@ function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     }
 
     // Banner label
-    const labels = ['FASE CONCLUÃDA - CONTINUE', 'ÃšLTIMA ETAPA Ã€ FRENTE', 'FESTIVAL DO MILHO'];
+    const labels = ['FASE CONCLUÍDA - CONTINUE', 'ÚLTIMA ETAPA À FRENTE', 'FESTIVAL DO MILHO'];
     const stageIdx = STAGES.indexOf(stageCfg);
     const msg = labels[Math.max(0, Math.min(stageIdx, 2))];
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -603,7 +603,7 @@ function drawStageFlavor(ctx, sy, CANVAS_W, r, stageCfg) {
     }
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Draw: road lane slab Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Draw: road lane slab
 function drawRoadLane(ctx, sy, shd, CANVAS_W, r) {
     const top = shd === 0 ? '#525252' : '#474747';
     const front = shd === 0 ? '#282828' : '#202020';
@@ -1036,7 +1036,7 @@ function laneY(row, camRow, CANVAS_H) {
     return Math.round(CANVAS_H * PLAYER_Y_RATIO - (row - camRow + 1) * SLAB_STEP + SLAB_STEP * 0.5);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Main Component Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// Main component
 function normalizeMoveKey(key) {
     const k = key.toLowerCase();
     if (k === 'arrowup' || k === 'w' || k === 'up') return 'up';
@@ -1742,7 +1742,7 @@ export default function Game() {
                                     <div style={{ background: '#0b0d18', padding: '16px 20px', borderRadius: 10, border: '2px solid #33364f', marginBottom: 22, width: '100%', boxShadow: '0 8px 0 #05070f' }}>
                                         <h3 style={{ color: '#fff7dc', fontFamily: 'monospace', marginBottom: 12, fontSize: 16, textAlign: 'center' }}>CONTROLES</h3>
                                         <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#ffe066' }}>WASD ou Setas:</b> mover</p>
-                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#7ee8a2' }}>ESPAÃ‡O:</b> Escudo de Palha</p>
+                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#7ee8a2' }}>ESPAÇO:</b> Escudo de Palha</p>
                                         <p style={{ color: '#f0bf34', fontFamily: 'monospace', fontSize: 13, marginBottom: 0 }}>Colete milho para usar escudo.</p>
                                     </div>
                                     <button style={{ ...BTN, minWidth: 260 }} onClick={() => setPhase('playing')}>JOGAR AGORA</button>
@@ -1770,11 +1770,11 @@ export default function Game() {
                     )}
                     {phase === 'stageclear' && (
                         <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 540 }}>
-                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 34, marginBottom: 8 }}>FASE CONCLUÃDA!</div>
+                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 34, marginBottom: 8 }}>FASE CONCLUÍDA!</div>
                             <div style={{ color: '#fff7dc', fontFamily: 'monospace', fontSize: 18, margin: '4px 0 6px', fontWeight: 900 }}>FASE {stageCfg.id} - {stageCfg.name}</div>
                             {nextStage && (
                                 <div style={{ color: '#aeb2d8', fontFamily: 'monospace', fontSize: 14, marginBottom: 14, textAlign: 'center' }}>
-                                    PrÃ³xima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
+                                    Próxima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
                                 </div>
                             )}
                             <div style={{ background: '#101225', border: '2px solid #f0bf34', borderRadius: 10, padding: '10px 20px', marginBottom: 10, minWidth: 260 }}>
@@ -1783,10 +1783,10 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: stageCorn >= stageCfg.cornTarget ? '#7ee8a2' : '#aeb2d8', fontFamily: 'monospace', fontSize: 13, marginBottom: 14, fontWeight: 700 }}>
-                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na prÃ³xima para bÃ´nus'}
+                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na próxima para bônus'}
                             </div>
                             <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={advanceStage}>CONTINUAR</button>
-                            <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>
+                            <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>
                         </div>
                     )}
                     {phase === 'gameover' && (
@@ -1795,7 +1795,7 @@ export default function Game() {
                             <div style={{ ...TITLE, color: '#ff4455', fontSize: 40, marginBottom: 4 }}>GAME OVER</div>
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
-                                    <span style={STAT_LABEL}>FASE ALCANÃ‡ADA</span>
+                                    <span style={STAT_LABEL}>FASE ALCANÇADA</span>
                                     <b style={{ color: stageCfg.accent }}>FASE {stageCfg.id}</b>
                                     <small>{stageCfg.name}</small>
                                 </div>
@@ -1806,7 +1806,7 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
-                                PontuaÃ§Ã£o Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
                             
                             {!rankingSaved ? (
@@ -1826,7 +1826,7 @@ export default function Game() {
                                 </div>
                             ) : (
                                 <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÃ‡ÃƒO SALVA!</h4>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
                                     <div style={FINAL_RANKING_BOX}>
                                         {renderRankingRows(5, true)}
                                     </div>
@@ -1834,20 +1834,20 @@ export default function Game() {
                             )}
 
                             {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
-                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
                         </div>
                     )}
                     {phase === 'victory' && (
                         <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 640 }}>
                             <div style={{ ...TITLE, color: '#f5be00', fontSize: 36, marginBottom: 6 }}>FESTIVAL DO MILHO!</div>
                             <div style={{ color: '#eef0ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 12, textAlign: 'center' }}>
-                                VitÃ³ria! VocÃª concluiu todas as fases.
+                                Vitória! Você concluiu todas as fases.
                             </div>
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
-                                    <span style={STAT_LABEL}>ÃšLTIMA FASE</span>
+                                    <span style={STAT_LABEL}>ÚLTIMA FASE</span>
                                     <b style={{ color: stageCfg.accent }}>{stageCfg.name}</b>
-                                    <small>festival alcanÃ§ado</small>
+                                    <small>festival alcançado</small>
                                 </div>
                                 <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
                                     <span style={STAT_LABEL}>MILHOS</span>
@@ -1856,7 +1856,7 @@ export default function Game() {
                                 </div>
                             </div>
                             <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
-                                PontuaÃ§Ã£o Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
 
                             {!rankingSaved ? (
@@ -1876,7 +1876,7 @@ export default function Game() {
                                 </div>
                             ) : (
                                 <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÃ‡ÃƒO SALVA!</h4>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
                                     <div style={FINAL_RANKING_BOX}>
                                         {renderRankingRows(5, true)}
                                     </div>
@@ -1884,7 +1884,7 @@ export default function Game() {
                             )}
 
                             {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
-                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione EspaÃ§o/Enter</p>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
                         </div>
                     )}
                 </div>
@@ -2001,5 +2001,4 @@ const FINAL_RANKING_BOX = {
     maxHeight: 220,
     overflowY: 'auto',
 };
-
 
