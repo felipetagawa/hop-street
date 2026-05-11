@@ -1,4 +1,14 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import {
+    initAudio,
+    playCorn,
+    playHit,
+    playJump,
+    playShieldBreak,
+    playShieldOn,
+    playStageClear,
+    playVictory,
+} from '../audio';
 
 // â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TILE = 80;
@@ -242,10 +252,10 @@ function clearRanking() {
 
 // ─── Lane generation ──────────────────────────────────────────────────────────
 function makeLane(idx, CANVAS_W, stageCfg = STAGES[0]) {
-    if (idx < 3) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, 9), cornCol: null, cornTaken: false };
-    if (idx % 6 === 0) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), cornCol: null, cornTaken: false };
+    if (idx < 3) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, 9), corn: null, cornTaken: false };
+    if (idx % 6 === 0) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), corn: null, cornTaken: false };
     const roll = Math.random();
-    if (roll < (1 - stageCfg.roadRatio)) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), cornCol: null, cornTaken: false };
+    if (roll < (1 - stageCfg.roadRatio)) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), corn: null, cornTaken: false };
     const dir = Math.random() < 0.5 ? 1 : -1;
     const speedBase = stageCfg.carMin + Math.random() * (stageCfg.carMax - stageCfg.carMin);
     const speedVar = 0.92 + ((idx % 5) * 0.04);
@@ -280,7 +290,7 @@ function enforceLaneFairness(lane, idx, lanes, stageCfg, CANVAS_W) {
     const maxRun = stageCfg.maxRoadRun ?? 5;
     const roadRun = getRoadRun(lanes);
     if (lane.type === 'road' && roadRun >= maxRun) {
-        return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), cornCol: null, cornTaken: false };
+        return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), corn: null, cornTaken: false };
     }
     return lane;
 }
@@ -333,7 +343,7 @@ function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     }
 
     // Banner label
-    const labels = ['FASE CONCLUIDA - CONTINUE', 'ULTIMA ETAPA A FRENTE', 'FESTIVAL DO MILHO'];
+    const labels = ['FASE CONCLUÍDA - CONTINUE', 'ÚLTIMA ETAPA À FRENTE', 'FESTIVAL DO MILHO'];
     const stageIdx = STAGES.indexOf(stageCfg);
     const msg = labels[Math.max(0, Math.min(stageIdx, 2))];
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -350,7 +360,7 @@ function drawDestination(ctx, sy, CANVAS_W, stageCfg) {
     }
 }
 
-function makeCornParticles(seed, count = 10) {
+function makeCornParticles(seed, count = 15) {
     const rand = mulberry32(seed);
     const particles = [];
     for (let i = 0; i < count; i++) {
@@ -359,8 +369,8 @@ function makeCornParticles(seed, count = 10) {
         particles.push({
             vx: Math.cos(ang) * speed,
             vy: Math.sin(ang) * speed * 0.65 - 18,
-            size: 2 + ((rand() * 3) | 0),
-            life: 0.22 + rand() * 0.2,
+            size: 3 + ((rand() * 4) | 0),
+            life: 0.29 + rand() * 0.26,
             color: rand() > 0.5 ? '#ffd95b' : '#f0b92e',
         });
     }
@@ -376,19 +386,38 @@ function placeStageCorn(lanes, stageCfg, cols) {
         const preferred = 1 + ((r * 7) % Math.max(2, cols - 2));
         const blocked = new Set(ln.trees || []);
         if (!blocked.has(preferred)) {
-            ln.cornCol = preferred;
+            ln.corn = { col: preferred, golden: false };
             ln.cornTaken = false;
             placed++;
             continue;
         }
         for (let c = 1; c < cols - 1; c++) {
             if (!blocked.has(c)) {
-                ln.cornCol = c;
+                ln.corn = { col: c, golden: false };
                 ln.cornTaken = false;
                 placed++;
                 break;
             }
         }
+    }
+
+    const candidates = [];
+    for (let r = 2; r <= maxRow; r++) {
+        const ln = lanes[r];
+        if (!ln || ln.type !== 'grass' || ln.corn) continue;
+        const blocked = new Set(ln.trees || []);
+        const validCols = [];
+        for (let c = 1; c < cols - 1; c++) {
+            if (!blocked.has(c)) validCols.push(c);
+        }
+        if (validCols.length > 0) candidates.push({ row: r, validCols });
+    }
+    if (candidates.length > 0) {
+        const pickIdx = Math.floor(Math.random() * candidates.length);
+        const pick = candidates[pickIdx];
+        const col = pick.validCols[Math.floor(Math.random() * pick.validCols.length)];
+        lanes[pick.row].corn = { col, golden: true };
+        lanes[pick.row].cornTaken = false;
     }
 }
 
@@ -475,38 +504,49 @@ function drawGrassLane(ctx, sy, shd, trees, CANVAS_W, r) {
     }
 }
 
-function drawCorn(ctx, col, sy, time = 0) {
+function drawCorn(ctx, corn, sy, time = 0) {
+    if (!corn) return;
+    const col = corn.col;
+    const isGolden = !!corn.golden;
     const bob = Math.round(Math.sin(time * 0.006 + col) * 2);
-    const pulse = 0.62 + Math.sin(time * 0.009 + col) * 0.24;
+    const pulse = isGolden
+        ? (0.58 + Math.sin(((Date.now() % 600) / 600) * Math.PI * 2) * 0.22)
+        : (0.62 + Math.sin(time * 0.009 + col) * 0.24);
     const x = Math.round(col * TILE + TILE / 2 - 12);
     const y = Math.round(sy + LANE_H * 0.34 + bob);
 
     drawGroundShadow(ctx, x + 13, y + 32 - bob, 13, 4, 0.24);
 
-    ctx.fillStyle = `rgba(255,220,70,${0.18 + pulse * 0.16})`;
-    ctx.fillRect(x - 6, y - 5, 38, 38);
-    ctx.fillStyle = `rgba(255,250,160,${0.4 + pulse * 0.22})`;
+    ctx.fillStyle = isGolden ? `rgba(255,195,45,${0.25 + pulse * 0.25})` : `rgba(255,220,70,${0.18 + pulse * 0.16})`;
+    ctx.fillRect(x - 6 - (isGolden ? 1 : 0), y - 5 - (isGolden ? 1 : 0), 38 + (isGolden ? 2 : 0), 38 + (isGolden ? 2 : 0));
+    ctx.fillStyle = isGolden ? `rgba(255,245,190,${0.5 + pulse * 0.2})` : `rgba(255,250,160,${0.4 + pulse * 0.22})`;
     ctx.fillRect(x - 3, y, 4, 4);
     ctx.fillRect(x + 26, y + 7, 4, 4);
     ctx.fillRect(x + 19, y - 7, 3, 3);
     ctx.fillRect(x + 4, y + 26, 3, 3);
 
-    ctx.fillStyle = '#5a3610';
+    ctx.fillStyle = isGolden ? '#7d4a14' : '#5a3610';
     ctx.fillRect(x + 5, y, 15, 25);
     ctx.fillRect(x + 3, y + 4, 20, 18);
     ctx.fillRect(x + 8, y - 3, 10, 30);
 
-    ctx.fillStyle = '#ffd84d';
+    ctx.fillStyle = isGolden ? '#ffb82f' : '#ffd84d';
     ctx.fillRect(x + 7, y + 1, 11, 22);
-    ctx.fillStyle = '#f0b92e';
+    ctx.fillStyle = isGolden ? '#ff9427' : '#f0b92e';
     ctx.fillRect(x + 18, y + 4, 4, 18);
-    ctx.fillStyle = '#fff08a';
+    ctx.fillStyle = isGolden ? '#ffe69d' : '#fff08a';
     ctx.fillRect(x + 8, y + 3, 7, 4);
     ctx.fillRect(x + 9, y + 11, 7, 3);
     ctx.fillRect(x + 8, y + 18, 6, 3);
-    ctx.fillStyle = '#d89216';
+    ctx.fillStyle = isGolden ? '#f5871d' : '#d89216';
     ctx.fillRect(x + 12, y + 2, 2, 21);
     ctx.fillRect(x + 17, y + 7, 2, 12);
+
+    if (isGolden) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + 10, y + 5, 3, 3);
+        ctx.fillRect(x + 14, y + 8, 2, 2);
+    }
 
     ctx.fillStyle = '#244f1d';
     ctx.fillRect(x - 1, y + 15, 7, 11);
@@ -969,6 +1009,9 @@ export default function Game() {
     const pressedMoveKeysRef = useRef(new Set());
     const moveKeyOrderRef = useRef([]);
     const queuedMoveDirRef = useRef(null);
+    const shakeRef = useRef({ frames: 0, intensity: 0 });
+    const flashRef = useRef({ frames: 0, color: '' });
+    const nearMissRef = useRef({ show: false, timer: 0, cooldown: 0, x: 0, y: 0 });
 
     const [dims, setDims] = useState({ w: window.innerWidth, h: window.innerHeight, cols: 9 });
     const [phase, setPhase] = useState('start');       // start | playing | stageclear | gameover | victory
@@ -1042,7 +1085,7 @@ export default function Game() {
             maxRow: 1,
             frozen: false,
             cameraRow: 1,
-            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null, shieldBreak: null, cornBonusUntil: 0, shieldWarningUntil: 0 },
+            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null, shieldBreak: null, cornBonusUntil: 0, shieldWarningUntil: 0, goldenCornFrames: 0 },
         };
     }, []);
 
@@ -1137,6 +1180,7 @@ export default function Game() {
         if (nc === p.col && nr === p.row) return;
         ensureLanes(s, cfg);
         p.targetCol = nc; p.targetRow = nr; p.hopT = 0;
+        playJump();
     }, [dims.cols, ensureLanes]);
 
     const loop = useCallback((time) => {
@@ -1170,22 +1214,31 @@ export default function Game() {
                 if (p.row > s.maxRow) {
                     s.maxRow = p.row;
                     const prevScore = s.score;
-                    s.score = p.row - 1;
+                    s.score = Math.max(s.score, p.row - 1);
                     if (s.score > prevScore) s.fx.scorePopUntil = time + 260;
                     setScore(s.score);
                     if (s.score > hiRef.current) { hiRef.current = s.score; setHiScore(s.score); }
                 }
                 const landedLane = s.lanes[p.row];
-                if (landedLane && landedLane.type === 'grass' && landedLane.cornCol === p.col && !landedLane.cornTaken) {
+                if (landedLane && landedLane.type === 'grass' && landedLane.corn && landedLane.corn.col === p.col && !landedLane.cornTaken) {
                     landedLane.cornTaken = true;
+                    playCorn();
+                    const isGoldenCorn = !!landedLane.corn.golden;
                     s.stageCorn += 1;
                     s.totalCorn += 1;
-                    s.cornBank += 1;
+                    s.cornBank += isGoldenCorn ? 3 : 1;
+                    if (isGoldenCorn) {
+                        s.score += 15;
+                        s.fx.scorePopUntil = time + 260;
+                        s.fx.goldenCornFrames = 90;
+                        setScore(s.score);
+                        if (s.score > hiRef.current) { hiRef.current = s.score; setHiScore(s.score); }
+                    }
                     s.fx.cornPopUntil = time + 260;
                     const collectY = laneY(p.row, s.cameraRow, h) + LANE_H * 0.54;
                     const collectX = p.col * TILE + TILE / 2;
                     const cseed = (((p.row + 3) * 15331) ^ ((p.col + 11) * 9176) ^ ((time | 0) * 37)) >>> 0;
-                    s.fx.cornBurst = { t0: time, x: collectX, y: collectY, particles: makeCornParticles(cseed) };
+                    s.fx.cornBurst = { t0: time, x: collectX, y: collectY, particles: makeCornParticles(cseed, isGoldenCorn ? 30 : 15) };
                     if (s.stageCorn === cfg.cornTarget) {
                         s.fx.cornBonusUntil = time + 1500;
                     }
@@ -1198,8 +1251,10 @@ export default function Game() {
                     clearMovementKeys();
                     s.frozen = true;
                     if (stageIdx >= STAGES.length - 1) {
+                        playVictory();
                         setPhase('victory');
                     } else {
+                        playStageClear();
                         setPhase('stageclear');
                     }
                 }
@@ -1227,11 +1282,16 @@ export default function Game() {
                 
                 if (p.shield) {
                     p.shield = false;
+                    playShieldBreak();
+                    shakeRef.current = { frames: 6, intensity: 3 };
                     p.invincibleUntil = time + 1000;
                     const cseed = (((p.row + 3) * 15331) ^ ((time | 0) * 37)) >>> 0;
                     s.fx.shieldBreak = { t0: time, x: impactX, y: impactY, particles: makeShieldParticles(cseed) };
                 } else {
                     clearMovementKeys();
+                    playHit();
+                    shakeRef.current = { frames: 10, intensity: 5 };
+                    flashRef.current = { frames: 5, color: 'rgba(220,30,30,0.35)' };
                     const seed = (((p.row + 1) * 92821) ^ ((p.col + 7) * 68917) ^ ((time | 0) * 131)) >>> 0;
                     s.fx.hit = { t0: time, x: impactX, y: impactY, particles: makeImpactParticles(seed) };
                     s.frozen = true;
@@ -1240,8 +1300,51 @@ export default function Game() {
             }
         }
 
+        if (nearMissRef.current.cooldown > 0) nearMissRef.current.cooldown -= 1;
+        if (nearMissRef.current.timer > 0) {
+            nearMissRef.current.timer -= 1;
+            if (nearMissRef.current.timer <= 0) nearMissRef.current.show = false;
+        }
+
+        if (!s.frozen && phase === 'playing') {
+            const ar = p.row + (p.targetRow - p.row) * p.hopT;
+            const checkRow = Math.round(ar);
+            const ln = s.lanes[checkRow];
+            if (ln && ln.type === 'road' && nearMissRef.current.cooldown <= 0 && isSafe(s, w, time)) {
+                const shrink = 22;
+                const px = (p.col + (p.targetCol - p.col) * p.hopT) * TILE + shrink;
+                const pw = TILE - shrink * 2;
+                const nearCar = ln.cars.find(c => {
+                    const carLeft = c.x + 12;
+                    const carRight = c.x + CAR_W - 12;
+                    const gap = px + pw < carLeft ? carLeft - (px + pw) : px > carRight ? px - carRight : 0;
+                    return gap > 0 && gap <= TILE * 0.9;
+                });
+                if (nearCar) {
+                    const nearX = (p.col + (p.targetCol - p.col) * p.hopT) * TILE + TILE / 2;
+                    const nearY = laneY(ar, s.cameraRow, h) + LANE_H * 0.16;
+                    nearMissRef.current = { show: true, timer: 90, cooldown: 120, x: nearX, y: nearY };
+                    s.score += 2;
+                    s.fx.scorePopUntil = time + 260;
+                    setScore(s.score);
+                    if (s.score > hiRef.current) { hiRef.current = s.score; setHiScore(s.score); }
+                }
+            }
+        }
+
         const tgt = p.hopT < 1 ? p.row + (p.targetRow - p.row) * p.hopT : p.row;
         s.cameraRow += (tgt - s.cameraRow) * 0.13;
+
+        let didShake = false;
+        if (shakeRef.current.frames > 0) {
+            const intensity = shakeRef.current.intensity;
+            const ox = (Math.random() * 2 - 1) * intensity;
+            const oy = (Math.random() * 2 - 1) * intensity;
+            ctx.save();
+            ctx.translate(ox, oy);
+            shakeRef.current.frames -= 1;
+            didShake = true;
+        }
 
         drawBg(ctx, w, h, cfg);
 
@@ -1260,7 +1363,7 @@ export default function Game() {
             } else if (ln.type === 'grass') {
                 drawGrassLane(ctx, sy, ln.shade, ln.trees, w, r);
                 drawStageFlavor(ctx, sy, w, r, cfg);
-                if (ln.cornCol !== null && !ln.cornTaken) drawCorn(ctx, ln.cornCol, sy, time);
+                if (ln.corn && !ln.cornTaken) drawCorn(ctx, ln.corn, sy, time);
             } else {
                 drawRoadLane(ctx, sy, ln.shade, w, r);
                 ln.cars.forEach(c => drawCar(ctx, c.x, sy, ln.dir, c.color, c.variant));
@@ -1281,6 +1384,16 @@ export default function Game() {
             drawChicken(ctx, ac * TILE, csy, p.hopT < 1 ? p.hopT : 1, time);
         }
 
+        if (nearMissRef.current.show && nearMissRef.current.timer > 0) {
+            const alpha = Math.max(0, Math.min(1, nearMissRef.current.timer / 90));
+            ctx.font = 'bold 24px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = `rgba(0,0,0,${0.45 * alpha})`;
+            ctx.fillText('QUASE!', w / 2 + 2, 122);
+            ctx.fillStyle = `rgba(255,224,80,${alpha})`;
+            ctx.fillText('QUASE!', w / 2, 120);
+        }
+
         const scorePop = s.fx.scorePopUntil > time ? (s.fx.scorePopUntil - time) / 260 : 0;
         drawHUD(ctx, s.score, hiRef.current, w, scorePop, `FASE ${cfg.id} - ${cfg.name}`, s.stageCorn, cfg.cornTarget, s.cornBank, p.shield);
         
@@ -1289,6 +1402,16 @@ export default function Game() {
             ctx.font = 'bold 20px monospace';
             ctx.textAlign = 'center';
             ctx.fillText('META DE MILHO COMPLETA!', w / 2, h / 2 - 40);
+        }
+        if (s.fx.goldenCornFrames > 0) {
+            const alpha = Math.max(0, Math.min(1, s.fx.goldenCornFrames / 90));
+            ctx.font = 'bold 24px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = `rgba(80,40,0,${0.5 * alpha})`;
+            ctx.fillText('MILHO DOURADO! +15', w / 2 + 2, h * 0.36 + 2);
+            ctx.fillStyle = `rgba(255,210,0,${0.75 * alpha})`;
+            ctx.fillText('MILHO DOURADO! +15', w / 2, h * 0.36);
+            s.fx.goldenCornFrames -= 1;
         }
         if (s.fx.shieldWarningUntil > time) {
             ctx.fillStyle = '#f0bf34';
@@ -1300,6 +1423,14 @@ export default function Game() {
         if (s.fx.shieldBreak && drawShieldBreakFX(ctx, s.fx.shieldBreak, time)) s.fx.shieldBreak = null;
         if (s.fx.cornBurst && drawCornFX(ctx, s.fx.cornBurst, time)) s.fx.cornBurst = null;
         if (s.fx.hit && drawImpactFX(ctx, s.fx.hit, time)) s.fx.hit = null;
+
+        if (didShake) ctx.restore();
+
+        if (flashRef.current.frames > 0) {
+            ctx.fillStyle = flashRef.current.color;
+            ctx.fillRect(0, 0, w, h);
+            flashRef.current.frames -= 1;
+        }
 
         rafRef.current = requestAnimationFrame(loop);
     }, [dims, phase, stageIdx, triggerMove, getActiveMoveDir, clearMovementKeys]);
@@ -1326,11 +1457,13 @@ export default function Game() {
                 clearMovementKeys();
                 return;
             }
+
+            initAudio();
             
             const s = stateRef.current;
             const key = e.key.toLowerCase();
             const moveDir = normalizeMoveKey(key);
-            const isGameKey = Boolean(moveDir) || key === ' ';
+            const isGameKey = Boolean(moveDir) || key === ' ' || key === 'enter';
 
             if (moveDir) {
                 e.preventDefault();
@@ -1357,6 +1490,8 @@ export default function Game() {
                 if (s.cornBank >= 3 && !s.player.shield) {
                     s.cornBank -= 3;
                     s.player.shield = true;
+                    playShieldOn();
+                    flashRef.current = { frames: 4, color: 'rgba(255,210,0,0.25)' };
                     setCornBank(s.cornBank);
                 } else if (!s.player.shield) {
                     s.fx.shieldWarningUntil = performance.now() + 1000;
@@ -1377,12 +1512,16 @@ export default function Game() {
             moveKeyOrderRef.current = moveKeyOrderRef.current.filter(k => k !== key);
         };
 
+        const onClick = () => initAudio();
+
         window.addEventListener('keydown', onKeyDown);
         window.addEventListener('keyup', onKeyUp);
+        window.addEventListener('click', onClick);
         window.addEventListener('blur', clearMovementKeys);
         return () => {
             window.removeEventListener('keydown', onKeyDown);
             window.removeEventListener('keyup', onKeyUp);
+            window.removeEventListener('click', onClick);
             window.removeEventListener('blur', clearMovementKeys);
         };
     }, [phase, resetGame, advanceStage, triggerMove, stageIdx, rankingSaved, clearMovementKeys, getActiveMoveDir]);
@@ -1393,15 +1532,26 @@ export default function Game() {
     }, [phase, loop]);
 
     const nextStage = STAGES[stageIdx + 1];
-    const renderRankingRows = (limit = 10) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    const renderRankingRows = (limit = 10, compact = false) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? 5 : 8, width: '100%' }}>
             {rankingList.slice(0, limit).map((r, i) => (
-                <div key={`${r.name}-${r.score}-${r.date}-${i}`} style={{ fontFamily: 'monospace', fontSize: 13, color: i < 3 ? '#ffe066' : '#bbb' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
-                        <span>{i + 1}. {r.name}</span>
-                        <span style={{ fontWeight: 'bold' }}>{r.score}</span>
+                <div key={`${r.name}-${r.score}-${r.date}-${i}`} style={{
+                    fontFamily: 'monospace',
+                    fontSize: compact ? 11 : (i < 3 ? 14 : 13),
+                    color: i < 3 ? '#fff4b0' : '#c8cae8',
+                    background: i < 3 ? 'rgba(245,190,0,0.1)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${i < 3 ? 'rgba(245,190,0,0.45)' : 'rgba(255,255,255,0.08)'}`,
+                    borderRadius: compact ? 6 : 8,
+                    padding: compact ? '5px 7px' : '7px 9px',
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'center' }}>
+                        <span style={{ fontWeight: i < 3 ? 900 : 700 }}>
+                            <span style={{ display: 'inline-block', minWidth: compact ? 20 : 24 }}>{['🥇', '🥈', '🥉'][i] || `${i + 1}.`}</span>
+                            {r.name}
+                        </span>
+                        <span style={{ fontWeight: 900, color: i < 3 ? '#ffe066' : '#eef0ff' }}>{r.score}</span>
                     </div>
-                    <div style={{ color: '#6f6f92', fontSize: 10, marginTop: 2 }}>
+                    <div style={{ color: '#8589ad', fontSize: compact ? 9 : 10, marginTop: compact ? 1 : 3 }}>
                         {r.stage} | {r.corn} milhos{r.date ? ` | ${r.date}` : ''}
                     </div>
                 </div>
@@ -1416,34 +1566,38 @@ export default function Game() {
             {phase !== 'playing' && (
                 <div style={OVL}>
                     {phase === 'start' && (
-                        <div style={{...PANEL, maxWidth: 800, padding: '36px 48px'}}>
-                            <div style={TITLE}>HOP STREET</div>
-                            <p style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 14, marginBottom: 6, textAlign: 'center' }}>
-                                Ajude a galinha a chegar ao <b style={{ color: '#ffe066' }}>Festival do Milho</b>
+                        <div style={{...PANEL, maxWidth: 980, padding: '34px 46px'}}>
+                            <div style={{ ...TITLE, fontSize: 58, color: '#ffe066', marginBottom: 4 }}>HOP STREET</div>
+                            <p style={{ color: '#eef0ff', fontFamily: 'monospace', fontSize: 17, marginBottom: 8, textAlign: 'center', lineHeight: 1.45 }}>
+                                Atravesse as ruas, colete milho e chegue ao <b style={{ color: '#ffe066' }}>Festival do Milho</b>.
                             </p>
+                            <div style={{ color: '#7ee8a2', fontFamily: 'monospace', fontWeight: 900, fontSize: 16, marginTop: 6, textAlign: 'center' }}>
+                                Pressione ESPAÇO ou ENTER para começar
+                            </div>
                             
-                            <div style={{ display: 'flex', gap: 40, marginTop: 24, textAlign: 'left', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 300 }}>
+                            <div style={{ display: 'flex', gap: 34, marginTop: 24, textAlign: 'left', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'stretch' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minWidth: 320 }}>
+                                    <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 360 }}>
                                         {STAGES.map((s, i) => (
-                                            <div key={i} style={{ background: '#1a1a3a', border: '2px solid #4a4a6a', borderRadius: 8, padding: '6px 12px', fontFamily: 'monospace', fontSize: 11, color: '#aaa', textAlign: 'center' }}>
+                                            <div key={i} style={{ background: '#15172c', border: `2px solid ${s.accent}`, borderRadius: 8, padding: '8px 12px', fontFamily: 'monospace', fontSize: 11, color: '#c8cae8', textAlign: 'center', boxShadow: '0 5px 0 #05070f' }}>
                                                 <div style={{ color: s.accent, fontWeight: 900 }}>FASE {s.id}</div>
                                                 <div>{s.name}</div>
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{ background: '#111', padding: '12px 20px', borderRadius: 8, border: '1px solid #333', marginBottom: 24, width: '100%' }}>
-                                        <h3 style={{ color: '#fff', fontFamily: 'monospace', marginBottom: 8, fontSize: 14 }}>CONTROLES:</h3>
-                                        <p style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 12, marginBottom: 4 }}><b>Setas/WASD:</b> Mover galinha</p>
-                                        <p style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 12, marginBottom: 0 }}><b>ESPACO:</b> Ativar Escudo (Custa 3 <span style={{ color: '#ffe066' }}>Milhos</span>)</p>
+                                    <div style={{ background: '#0b0d18', padding: '16px 20px', borderRadius: 10, border: '2px solid #33364f', marginBottom: 22, width: '100%', boxShadow: '0 8px 0 #05070f' }}>
+                                        <h3 style={{ color: '#fff7dc', fontFamily: 'monospace', marginBottom: 12, fontSize: 16, textAlign: 'center' }}>CONTROLES</h3>
+                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#ffe066' }}>WASD ou Setas:</b> mover</p>
+                                        <p style={{ color: '#d5d8ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 8 }}><b style={{ color: '#7ee8a2' }}>ESPAÇO:</b> Escudo de Palha</p>
+                                        <p style={{ color: '#f0bf34', fontFamily: 'monospace', fontSize: 13, marginBottom: 0 }}>Colete milho para usar escudo.</p>
                                     </div>
-                                    <button style={BTN} onClick={() => setPhase('playing')}>JOGAR AGORA</button>
+                                    <button style={{ ...BTN, minWidth: 260 }} onClick={() => setPhase('playing')}>JOGAR AGORA</button>
                                 </div>
                                 
-                                <div style={{ background: '#151520', border: '2px solid #3a3a5a', borderRadius: 12, padding: '16px 20px', minWidth: 260, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 style={{ color: '#f5be00', fontFamily: 'monospace', marginBottom: 12, textAlign: 'center', fontSize: 18 }}>TOP 10 LOCAL</h3>
+                                <div style={{ background: '#101225', border: '3px solid #f5be00', borderRadius: 12, padding: '18px 20px', minWidth: 330, maxWidth: 390, display: 'flex', flexDirection: 'column', boxShadow: '0 10px 0 #05070f' }}>
+                                    <h3 style={{ color: '#ffe066', fontFamily: 'monospace', marginBottom: 14, textAlign: 'center', fontSize: 22, textShadow: '2px 2px 0 #000' }}>TOP 10 DA FEIRA</h3>
                                     {rankingList.length === 0 ? (
-                                        <p style={{ color: '#555', fontFamily: 'monospace', fontSize: 12, textAlign: 'center', margin: 'auto' }}>Nenhum recorde ainda.</p>
+                                        <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 13, textAlign: 'center', margin: 'auto' }}>Nenhum recorde ainda. Seja o primeiro da fila!</p>
                                     ) : (
                                         renderRankingRows(10)
                                     )}
@@ -1461,39 +1615,48 @@ export default function Game() {
                         </div>
                     )}
                     {phase === 'stageclear' && (
-                        <div style={PANEL}>
-                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 36 }}>FASE {stageCfg.id} CONCLUIDA!</div>
-                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 18, margin: '10px 0 6px' }}>{stageCfg.name}</div>
+                        <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 540 }}>
+                            <div style={{ ...TITLE, color: '#7ee8a2', fontSize: 34, marginBottom: 8 }}>FASE CONCLUÍDA!</div>
+                            <div style={{ color: '#fff7dc', fontFamily: 'monospace', fontSize: 18, margin: '4px 0 6px', fontWeight: 900 }}>FASE {stageCfg.id} - {stageCfg.name}</div>
                             {nextStage && (
-                                <div style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 14, marginBottom: 24, textAlign: 'center' }}>
-                                    Proxima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
+                                <div style={{ color: '#aeb2d8', fontFamily: 'monospace', fontSize: 14, marginBottom: 14, textAlign: 'center' }}>
+                                    Próxima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
                                 </div>
                             )}
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 6 }}>
-                                Milhos coletados: <b>{stageCorn}/{stageCfg.cornTarget}</b>
+                            <div style={{ background: '#101225', border: '2px solid #f0bf34', borderRadius: 10, padding: '10px 20px', marginBottom: 10, minWidth: 260 }}>
+                                <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 16, fontWeight: 900 }}>
+                                    Milhos coletados: {stageCorn}/{stageCfg.cornTarget}
+                                </div>
                             </div>
-                            <div style={{ color: stageCorn >= stageCfg.cornTarget ? '#7ee8a2' : '#8a8ab0', fontFamily: 'monospace', fontSize: 12, marginBottom: 16 }}>
-                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na proxima para bonus'}
+                            <div style={{ color: stageCorn >= stageCfg.cornTarget ? '#7ee8a2' : '#aeb2d8', fontFamily: 'monospace', fontSize: 13, marginBottom: 14, fontWeight: 700 }}>
+                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na próxima para bônus'}
                             </div>
-                            <button style={BTN} onClick={advanceStage}>CONTINUAR</button>
-                            <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>
+                            <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={advanceStage}>CONTINUAR</button>
+                            <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>
                         </div>
                     )}
                     {phase === 'gameover' && (
-                        <div style={PANEL}>
-                            <div style={{ ...TITLE, color: '#ff4455' }}>GAME OVER</div>
-                            <div style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
-                                FASE <b style={{ color: stageCfg.accent }}>{stageCfg.id}</b> - {stageCfg.name}
+                        <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 620 }}>
+                            <div style={{ ...TITLE, color: '#ff4455', fontSize: 40, marginBottom: 4 }}>GAME OVER</div>
+                            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
+                                <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
+                                    <span style={STAT_LABEL}>FASE ALCANÇADA</span>
+                                    <b style={{ color: stageCfg.accent }}>FASE {stageCfg.id}</b>
+                                    <small>{stageCfg.name}</small>
+                                </div>
+                                <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
+                                    <span style={STAT_LABEL}>MILHOS</span>
+                                    <b style={{ color: '#ffe066' }}>{stateRef.current?.totalCorn || 0}</b>
+                                    <small>coletados no total</small>
+                                </div>
                             </div>
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
-                                Milhos Totais: <b>{stateRef.current?.totalCorn || 0}</b>
-                            </div>
-                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '10px 0 20px' }}>
+                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
                                 Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
                             
                             {!rankingSaved ? (
-                                <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ marginBottom: 14, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div style={{ color: '#aeb2d8', fontFamily: 'monospace', fontSize: 12, marginBottom: 8 }}>Digite seu nome para entrar no ranking local.</div>
                                     <input 
                                         type="text" 
                                         placeholder="Seu nome" 
@@ -1502,41 +1665,48 @@ export default function Game() {
                                         onChange={e => setPlayerName(e.target.value)}
                                         onKeyDown={e => { if(e.key === 'Enter') handleSaveRanking(); }}
                                         autoFocus
-                                        style={{ padding: '10px 16px', fontSize: 18, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 12, outline: 'none' }}
+                                        style={{ padding: '8px 14px', fontSize: 17, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 10, outline: 'none' }}
                                     />
-                                    <button style={{...BTN, fontSize: 16, padding: '12px 24px'}} onClick={handleSaveRanking}>SALVAR NO RANKING</button>
+                                    <button style={{...BTN, fontSize: 15, padding: '10px 22px'}} onClick={handleSaveRanking}>Salvar no ranking</button>
                                 </div>
                             ) : (
-                                <div style={{ marginBottom: 24, width: '100%', maxWidth: 300 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 10, fontSize: 16 }}>PONTUAÇÃO SALVA!</h4>
-                                    <div style={{ background: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                        {renderRankingRows(10)}
+                                <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
+                                    <div style={FINAL_RANKING_BOX}>
+                                        {renderRankingRows(5, true)}
                                     </div>
                                 </div>
                             )}
 
-                            {rankingSaved && <button style={BTN} onClick={resetGame}>JOGAR NOVAMENTE</button>}
-                            {rankingSaved && <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>}
+                            {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
                         </div>
                     )}
                     {phase === 'victory' && (
-                        <div style={PANEL}>
-                            <div style={{ ...TITLE, color: '#f5be00', fontSize: 36 }}>FESTIVAL DO MILHO!</div>
-                            <div style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 14, marginBottom: 6, textAlign: 'center' }}>
-                                Voce concluiu todas as fases!
+                        <div style={{ ...PANEL, ...COMPACT_PANEL, maxWidth: 640 }}>
+                            <div style={{ ...TITLE, color: '#f5be00', fontSize: 36, marginBottom: 6 }}>FESTIVAL DO MILHO!</div>
+                            <div style={{ color: '#eef0ff', fontFamily: 'monospace', fontSize: 14, marginBottom: 12, textAlign: 'center' }}>
+                                Vitória! Você concluiu todas as fases.
                             </div>
-                            <div style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
-                                FASE <b style={{ color: stageCfg.accent }}>{stageCfg.name}</b>
+                            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
+                                <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
+                                    <span style={STAT_LABEL}>ÚLTIMA FASE</span>
+                                    <b style={{ color: stageCfg.accent }}>{stageCfg.name}</b>
+                                    <small>festival alcançado</small>
+                                </div>
+                                <div style={{ ...STAT_CARD, ...COMPACT_STAT_CARD }}>
+                                    <span style={STAT_LABEL}>MILHOS</span>
+                                    <b style={{ color: '#ffe066' }}>{stateRef.current?.totalCorn || totalCorn}</b>
+                                    <small>coletados no total</small>
+                                </div>
                             </div>
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
-                                Milhos Totais: <b>{stateRef.current?.totalCorn || totalCorn}</b>
-                            </div>
-                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '10px 0 20px' }}>
+                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '2px 0 14px', background: '#101225', border: '2px solid #ffe066', borderRadius: 10, padding: '9px 18px' }}>
                                 Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
                             </div>
 
                             {!rankingSaved ? (
-                                <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ marginBottom: 14, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div style={{ color: '#aeb2d8', fontFamily: 'monospace', fontSize: 12, marginBottom: 8 }}>Digite seu nome para entrar no ranking local.</div>
                                     <input 
                                         type="text" 
                                         placeholder="Seu nome" 
@@ -1545,21 +1715,21 @@ export default function Game() {
                                         onChange={e => setPlayerName(e.target.value)}
                                         onKeyDown={e => { if(e.key === 'Enter') handleSaveRanking(); }}
                                         autoFocus
-                                        style={{ padding: '10px 16px', fontSize: 18, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 12, outline: 'none' }}
+                                        style={{ padding: '8px 14px', fontSize: 17, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 10, outline: 'none' }}
                                     />
-                                    <button style={{...BTN, fontSize: 16, padding: '12px 24px'}} onClick={handleSaveRanking}>SALVAR NO RANKING</button>
+                                    <button style={{...BTN, fontSize: 15, padding: '10px 22px'}} onClick={handleSaveRanking}>Salvar no ranking</button>
                                 </div>
                             ) : (
-                                <div style={{ marginBottom: 24, width: '100%', maxWidth: 300 }}>
-                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 10, fontSize: 16 }}>PONTUAÇÃO SALVA!</h4>
-                                    <div style={{ background: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                        {renderRankingRows(10)}
+                                <div style={{ marginBottom: 14, width: '100%', maxWidth: 430 }}>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 8, fontSize: 18 }}>PONTUAÇÃO SALVA!</h4>
+                                    <div style={FINAL_RANKING_BOX}>
+                                        {renderRankingRows(5, true)}
                                     </div>
                                 </div>
                             )}
 
-                            {rankingSaved && <button style={BTN} onClick={resetGame}>JOGAR NOVAMENTE</button>}
-                            {rankingSaved && <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>}
+                            {rankingSaved && <button style={{ ...BTN, fontSize: 18, padding: '12px 34px' }} onClick={resetGame}>Jogar novamente</button>}
+                            {rankingSaved && <p style={{ color: '#8589ad', fontFamily: 'monospace', fontSize: 11, marginTop: 10 }}>ou pressione Espaço/Enter</p>}
                         </div>
                     )}
                 </div>
@@ -1606,15 +1776,23 @@ function DPad({ stateRef, ensureLanes, stageCfg, cols }) {
 const OVL = {
     position: 'absolute', inset: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: 'rgba(0,0,0,0.78)', zIndex: 10,
+    background: 'radial-gradient(circle at 50% 35%, rgba(22,28,52,0.9), rgba(0,0,0,0.86) 62%, rgba(0,0,0,0.94))', zIndex: 10,
+    padding: 16,
+    boxSizing: 'border-box',
 };
 const PANEL = {
     background: '#0f1923',
-    border: '4px solid #fff',
-    boxShadow: '0 16px 50px rgba(0,0,0,0.9)',
+    border: '4px solid #eef0ff',
+    boxShadow: '0 16px 0 #05070f, 0 26px 60px rgba(0,0,0,0.9)',
     borderRadius: 20, padding: '44px 56px',
     display: 'flex', flexDirection: 'column', alignItems: 'center',
     maxWidth: '92%', textAlign: 'center',
+    maxHeight: 'calc(100dvh - 32px)',
+    overflowY: 'auto',
+    boxSizing: 'border-box',
+};
+const COMPACT_PANEL = {
+    padding: '26px 34px',
 };
 const TITLE = {
     fontFamily: 'monospace', fontWeight: 900, fontSize: 48, color: '#fff',
@@ -1626,4 +1804,39 @@ const BTN = {
     borderRadius: 12, padding: '16px 44px', cursor: 'pointer',
     boxShadow: '0 6px 0 #000', display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'transform 0.1s',
+};
+const STAT_CARD = {
+    background: '#101225',
+    border: '2px solid #33364f',
+    borderRadius: 10,
+    padding: '12px 16px',
+    minWidth: 190,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 4,
+    color: '#eef0ff',
+    fontFamily: 'monospace',
+    boxShadow: '0 5px 0 #05070f',
+};
+const COMPACT_STAT_CARD = {
+    padding: '9px 12px',
+    minWidth: 170,
+    gap: 2,
+};
+const STAT_LABEL = {
+    color: '#8589ad',
+    fontSize: 11,
+    fontWeight: 900,
+};
+const FINAL_RANKING_BOX = {
+    background: '#0b0d18',
+    border: '2px solid #33364f',
+    borderRadius: 10,
+    padding: 8,
+    textAlign: 'left',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 4,
+    maxHeight: 220,
+    overflowY: 'auto',
 };
