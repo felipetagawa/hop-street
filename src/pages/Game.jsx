@@ -130,46 +130,117 @@ function drawGroundShadow(ctx, cx, cy, w, h, alpha = 0.22) {
     ctx.fill();
 }
 
-function drawPixelPanel(ctx, x, y, w, h, label, value, isRight = false) {
-    const pad = 8;
-    const border = 4;
-    
-    // Outer shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(x + 4, y + 4, w, h);
-
-    // Main box (Dark Slate)
-    ctx.fillStyle = '#1a1a2e';
+function drawPixelFrame(ctx, x, y, w, h, accent = '#f5be00', fill = '#14162a') {
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(x + 5, y + 6, w, h);
+    ctx.fillStyle = '#05070f';
     ctx.fillRect(x, y, w, h);
-    
-    // Double Border
-    ctx.strokeStyle = '#4a4a6a';
-    ctx.lineWidth = border;
-    ctx.strokeRect(x + border/2, y + border/2, w - border, h - border);
-    
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
-
-    // Label
-    ctx.fillStyle = '#8a8ab0';
-    ctx.font = 'bold 12px monospace';
-    ctx.textAlign = isRight ? 'right' : 'left';
-    ctx.fillText(label, isRight ? x + w - 12 : x + 12, y + 18);
-
-    // Value
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 32px monospace';
-    ctx.textAlign = isRight ? 'right' : 'left';
-    ctx.fillText(value, isRight ? x + w - 12 : x + 12, y + h - 14);
-
-    // Corner highlights
-    ctx.fillStyle = 'rgba(255,255,255,0.1)';
-    ctx.fillRect(x + 4, y + 4, w - 8, 4);
-    ctx.fillRect(x + 4, y + 4, 4, h - 8);
+    ctx.fillStyle = accent;
+    ctx.fillRect(x + 3, y + 3, w - 6, h - 6);
+    ctx.fillStyle = '#2f3358';
+    ctx.fillRect(x + 6, y + 6, w - 12, h - 12);
+    ctx.fillStyle = fill;
+    ctx.fillRect(x + 8, y + 8, w - 16, h - 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.fillRect(x + 10, y + 10, w - 20, 4);
+    ctx.fillRect(x + 10, y + 10, 4, h - 20);
+    ctx.fillStyle = '#05070f';
+    ctx.fillRect(x, y, 8, 8);
+    ctx.fillRect(x + w - 8, y, 8, 8);
+    ctx.fillRect(x, y + h - 8, 8, 8);
+    ctx.fillRect(x + w - 8, y + h - 8, 8, 8);
 }
 
-// â”€â”€â”€ Lane generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function drawCornIcon(ctx, x, y, s = 1) {
+    const u = 2 * s;
+    ctx.fillStyle = '#5a3610';
+    ctx.fillRect(x + 3 * u, y, 5 * u, 10 * u);
+    ctx.fillStyle = '#ffd84d';
+    ctx.fillRect(x + 4 * u, y + u, 3 * u, 8 * u);
+    ctx.fillStyle = '#fff08a';
+    ctx.fillRect(x + 4 * u, y + 2 * u, 2 * u, 2 * u);
+    ctx.fillStyle = '#d89216';
+    ctx.fillRect(x + 7 * u, y + 2 * u, u, 7 * u);
+    ctx.fillStyle = '#244f1d';
+    ctx.fillRect(x + u, y + 6 * u, 3 * u, 5 * u);
+    ctx.fillRect(x + 7 * u, y + 6 * u, 3 * u, 5 * u);
+    ctx.fillStyle = '#58a83a';
+    ctx.fillRect(x + 2 * u, y + 6 * u, 2 * u, 4 * u);
+    ctx.fillRect(x + 7 * u, y + 6 * u, 2 * u, 4 * u);
+}
+
+function drawShieldIcon(ctx, x, y, s = 1, active = false) {
+    const u = 2 * s;
+    ctx.fillStyle = active ? '#7ee8a2' : '#5f617f';
+    ctx.fillRect(x + 2 * u, y, 8 * u, 3 * u);
+    ctx.fillRect(x + u, y + 3 * u, 10 * u, 5 * u);
+    ctx.fillRect(x + 3 * u, y + 8 * u, 6 * u, 3 * u);
+    ctx.fillStyle = active ? '#eaffc8' : '#aeb0c8';
+    ctx.fillRect(x + 4 * u, y + 2 * u, 3 * u, 2 * u);
+    ctx.fillStyle = '#243245';
+    ctx.fillRect(x + 9 * u, y + 3 * u, 2 * u, 5 * u);
+}
+
+function drawPixelPanel(ctx, x, y, w, h, label, value, isRight = false, accent = '#f5be00') {
+    drawPixelFrame(ctx, x, y, w, h, accent);
+
+    ctx.fillStyle = '#b7bad8';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = isRight ? 'right' : 'left';
+    ctx.fillText(label, isRight ? x + w - 14 : x + 14, y + 22);
+
+    ctx.fillStyle = '#fff7dc';
+    ctx.font = 'bold 31px monospace';
+    ctx.textAlign = isRight ? 'right' : 'left';
+    ctx.fillText(value, isRight ? x + w - 14 : x + 14, y + h - 14);
+}
+
+// ─── Ranking Helpers ────────────────────────────────────────────────────────────
+const RANKING_KEY = 'hopStreetRanking';
+
+function getRanking() {
+    try {
+        const data = localStorage.getItem(RANKING_KEY);
+        const parsed = data ? JSON.parse(data) : [];
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+            .filter(entry => entry && typeof entry === 'object')
+            .map(entry => ({
+                name: String(entry.name || 'Jogador').substring(0, 12),
+                score: Number(entry.score) || 0,
+                stage: entry.stage || 'FASE 1',
+                corn: Number(entry.corn) || 0,
+                date: entry.date || '',
+            }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10);
+    } catch {
+        return [];
+    }
+}
+
+function saveRanking(entry) {
+    const top10 = [...getRanking(), entry]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+    try {
+        localStorage.setItem(RANKING_KEY, JSON.stringify(top10));
+    } catch {
+        // If localStorage is unavailable, still return the in-memory result.
+    }
+    return top10;
+}
+
+function clearRanking() {
+    try {
+        localStorage.removeItem(RANKING_KEY);
+    } catch {
+        // Nothing else to do if the browser refuses localStorage access.
+    }
+    return [];
+}
+
+// ─── Lane generation ──────────────────────────────────────────────────────────
 function makeLane(idx, CANVAS_W, stageCfg = STAGES[0]) {
     if (idx < 3) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, 9), cornCol: null, cornTaken: false };
     if (idx % 6 === 0) return { type: 'grass', shade: idx % 2, trees: makeTrees(idx, Math.floor(CANVAS_W / TILE)), cornCol: null, cornTaken: false };
@@ -404,19 +475,48 @@ function drawGrassLane(ctx, sy, shd, trees, CANVAS_W, r) {
     }
 }
 
-function drawCorn(ctx, col, sy) {
-    const x = col * TILE + TILE / 2 - 7;
-    const y = sy + LANE_H * 0.44;
-    drawGroundShadow(ctx, x + 8, y + 20, 7, 2, 0.16);
-    ctx.fillStyle = '#f4c431';
-    ctx.fillRect(x + 2, y, 10, 14);
-    ctx.fillStyle = '#d29a17';
-    ctx.fillRect(x + 12, y + 2, 3, 14);
-    ctx.fillStyle = '#f9dd72';
-    ctx.fillRect(x + 3, y + 2, 7, 3);
-    ctx.fillStyle = '#4d8f2a';
-    ctx.fillRect(x - 1, y + 10, 3, 6);
-    ctx.fillRect(x + 12, y + 11, 3, 6);
+function drawCorn(ctx, col, sy, time = 0) {
+    const bob = Math.round(Math.sin(time * 0.006 + col) * 2);
+    const pulse = 0.62 + Math.sin(time * 0.009 + col) * 0.24;
+    const x = Math.round(col * TILE + TILE / 2 - 12);
+    const y = Math.round(sy + LANE_H * 0.34 + bob);
+
+    drawGroundShadow(ctx, x + 13, y + 32 - bob, 13, 4, 0.24);
+
+    ctx.fillStyle = `rgba(255,220,70,${0.18 + pulse * 0.16})`;
+    ctx.fillRect(x - 6, y - 5, 38, 38);
+    ctx.fillStyle = `rgba(255,250,160,${0.4 + pulse * 0.22})`;
+    ctx.fillRect(x - 3, y, 4, 4);
+    ctx.fillRect(x + 26, y + 7, 4, 4);
+    ctx.fillRect(x + 19, y - 7, 3, 3);
+    ctx.fillRect(x + 4, y + 26, 3, 3);
+
+    ctx.fillStyle = '#5a3610';
+    ctx.fillRect(x + 5, y, 15, 25);
+    ctx.fillRect(x + 3, y + 4, 20, 18);
+    ctx.fillRect(x + 8, y - 3, 10, 30);
+
+    ctx.fillStyle = '#ffd84d';
+    ctx.fillRect(x + 7, y + 1, 11, 22);
+    ctx.fillStyle = '#f0b92e';
+    ctx.fillRect(x + 18, y + 4, 4, 18);
+    ctx.fillStyle = '#fff08a';
+    ctx.fillRect(x + 8, y + 3, 7, 4);
+    ctx.fillRect(x + 9, y + 11, 7, 3);
+    ctx.fillRect(x + 8, y + 18, 6, 3);
+    ctx.fillStyle = '#d89216';
+    ctx.fillRect(x + 12, y + 2, 2, 21);
+    ctx.fillRect(x + 17, y + 7, 2, 12);
+
+    ctx.fillStyle = '#244f1d';
+    ctx.fillRect(x - 1, y + 15, 7, 11);
+    ctx.fillRect(x + 19, y + 16, 7, 11);
+    ctx.fillStyle = '#58a83a';
+    ctx.fillRect(x, y + 14, 5, 10);
+    ctx.fillRect(x + 19, y + 15, 5, 10);
+    ctx.fillStyle = '#8bd05a';
+    ctx.fillRect(x + 2, y + 16, 2, 4);
+    ctx.fillRect(x + 21, y + 17, 2, 4);
 }
 
 function drawStageFlavor(ctx, sy, CANVAS_W, r, stageCfg) {
@@ -637,56 +737,75 @@ function drawCar(ctx, x, sy, dir, color, variant = 'compact') {
 function drawChicken(ctx, px, py, hopT, time = 0) {
     const bounce = Math.sin(hopT * Math.PI);
     const idle = Math.sin(time * 0.006) * 2;
+    const land = Math.max(0, 1 - Math.abs(hopT - 1) * 5);
     
     const arc = bounce * 28;
-    const squishX = 1 - bounce * 0.12;
-    const squishY = 1 + bounce * 0.14;
+    const squishX = 1 - bounce * 0.08 + land * 0.05;
+    const squishY = 1 + bounce * 0.1 - land * 0.04;
 
     const cx = px + TILE / 2;
     const cy = py + LANE_H * 0.78 - arc - idle;
 
     ctx.save();
     ctx.translate(cx, cy);
-    drawGroundShadow(ctx, 0, arc + idle + 10, 20 * squishX, 6, 0.28);
+    drawGroundShadow(ctx, 2, arc + idle + 12, 23 * (1 - bounce * 0.18), 7, 0.32);
     ctx.scale(squishX, squishY);
 
-    ctx.strokeStyle = '#f09020';
-    ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(-7, 12); ctx.lineTo(-10, 24); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(7, 12); ctx.lineTo(10, 24); ctx.stroke();
-
-    const bw = 30, bh = 26;
+    const bw = 32, bh = 27;
+    ctx.fillStyle = '#2b2b36';
+    ctx.fillRect(-bw / 2 - 2, -bh / 2 - 2, bw + 4, bh + 4);
     ctx.fillStyle = '#f2f2f2';
     ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
-    ctx.fillStyle = shade('#f2f2f2', 15);
-    ctx.fillRect(-bw / 2, -bh / 2, bw, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-bw / 2 + 3, -bh / 2 + 3, bw - 8, 5);
+    ctx.fillStyle = '#d8d8d8';
+    ctx.fillRect(-bw / 2, bh / 2 - 2, bw, 5);
 
-    ctx.fillStyle = '#c0c0c0';
-    ctx.fillRect(bw / 2, -bh / 2 + 3, 7, bh + 5);
-    ctx.fillStyle = '#a8a8a8';
-    ctx.fillRect(-bw / 2, bh / 2, bw, 5);
-
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(-7, -bh / 2 - 12, 14, 14);
-
-    const hw = 22, hh = 20;
-    const hbY = -bh / 2 - 12 - hh;
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(-hw / 2, hbY, hw, hh);
-    ctx.fillStyle = '#c8c8c8';
-    ctx.fillRect(hw / 2, hbY + 3, 6, hh + 4);
-    ctx.fillStyle = '#b0b0b0';
-    ctx.fillRect(-hw / 2, hbY + hh, hw, 4);
-
-    ctx.fillStyle = '#dd3333';
-    ctx.fillRect(-6, hbY - 12, 7, 10);
-    ctx.fillRect(-2, hbY - 17, 6, 7);
+    ctx.fillStyle = '#cfcfd6';
+    ctx.fillRect(-bw / 2 - 4, -2, 10, 15);
+    ctx.fillStyle = '#eeeeee';
+    ctx.fillRect(-bw / 2 - 2, 0, 7, 10);
+    ctx.fillStyle = '#bfc0c8';
+    ctx.fillRect(-bw / 2 - 4, 10, 10, 4);
 
     ctx.fillStyle = '#f09020';
-    ctx.fillRect(hw / 2 - 1, hbY + hh / 2 - 3, 11, 7);
+    ctx.fillRect(-10, 13, 4, 12);
+    ctx.fillRect(8, 13, 4, 12);
+    ctx.fillStyle = '#c96f14';
+    ctx.fillRect(-12, 24, 10, 3);
+    ctx.fillRect(6, 24, 10, 3);
+
+    const hw = 23, hh = 21;
+    const hbY = -bh / 2 - hh + 2;
+    ctx.fillStyle = '#2b2b36';
+    ctx.fillRect(-hw / 2 - 2, hbY - 2, hw + 4, hh + 4);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(-hw / 2, hbY, hw, hh);
+    ctx.fillStyle = '#eeeeee';
+    ctx.fillRect(-hw / 2 + 3, hbY + 3, hw - 7, 4);
+    ctx.fillStyle = '#c8c8d0';
+    ctx.fillRect(hw / 2 - 2, hbY + 4, 5, hh);
+    ctx.fillStyle = '#b3b3bd';
+    ctx.fillRect(-hw / 2, hbY + hh - 2, hw, 4);
+
+    ctx.fillStyle = '#b51f2e';
+    ctx.fillRect(-8, hbY - 13, 8, 11);
+    ctx.fillRect(-2, hbY - 18, 7, 9);
+    ctx.fillStyle = '#ff4d5e';
+    ctx.fillRect(-6, hbY - 12, 5, 8);
+    ctx.fillRect(0, hbY - 17, 4, 6);
+
+    ctx.fillStyle = '#f6a12a';
+    ctx.fillRect(hw / 2 - 1, hbY + hh / 2 - 4, 12, 8);
+    ctx.fillStyle = '#ffd25a';
+    ctx.fillRect(hw / 2, hbY + hh / 2 - 3, 8, 3);
+    ctx.fillStyle = '#9b5a12';
+    ctx.fillRect(hw / 2 + 8, hbY + hh / 2 + 1, 3, 3);
 
     ctx.fillStyle = '#111';
-    ctx.fillRect(hw / 2 - 10, hbY + 5, 6, 6);
+    ctx.fillRect(hw / 2 - 10, hbY + 5, 7, 7);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(hw / 2 - 8, hbY + 6, 2, 2);
     ctx.restore();
 }
 
@@ -713,77 +832,60 @@ function drawShieldAura(ctx, px, py, hopT, time) {
 
 function drawHUD(ctx, score, hiScore, CANVAS_W, scorePop, stageName, stageCorn, stageCornTarget, cornBank, shieldActive) {
     const scoreY = 24 - Math.round((scorePop || 0) * 4);
-    drawPixelPanel(ctx, 24, scoreY, 120, 70, 'SCORE', score);
-    drawPixelPanel(ctx, CANVAS_W - 184, 24, 160, 70, 'BEST', hiScore, true);
+    drawPixelPanel(ctx, 24, scoreY, 128, 72, 'SCORE', score, false, '#ffe066');
+    drawPixelPanel(ctx, CANVAS_W - 184, 24, 160, 72, 'BEST', hiScore, true, '#7ee8a2');
     
-    const cx = CANVAS_W - 165;
-    const cy = 40;
-    ctx.fillStyle = '#f5be00';
-    ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2); ctx.fill();
     if (scorePop > 0) {
         ctx.fillStyle = `rgba(255,230,140,${0.35 * scorePop})`;
-        ctx.fillRect(24, scoreY + 6, 112, 58);
+        ctx.fillRect(32, scoreY + 10, 112, 54);
     }
     // Stage label in center
     if (stageName) {
-        ctx.fillStyle = 'rgba(0,0,0,0.45)';
-        ctx.fillRect(CANVAS_W / 2 - 120, 24, 240, 30);
-        ctx.strokeStyle = '#4a4a6a';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(CANVAS_W / 2 - 120, 24, 240, 30);
-        ctx.fillStyle = '#d0d0ff';
-        ctx.font = 'bold 13px monospace';
+        const w = 286;
+        const x = CANVAS_W / 2 - w / 2;
+        drawPixelFrame(ctx, x, 22, w, 34, '#d0d0ff', '#15172c');
+        ctx.fillStyle = '#eef0ff';
+        ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
         ctx.fillText(stageName, CANVAS_W / 2, 44);
         ctx.textAlign = 'left';
     }
     if (stageCornTarget > 0) {
-        const cw = 122;
-        const ch = 24;
-        const bx = CANVAS_W / 2 - cw / 2;
-        const by = 58;
-        ctx.fillStyle = 'rgba(0,0,0,0.42)';
-        ctx.fillRect(bx, by, cw, ch);
-        ctx.strokeStyle = '#4a4a6a';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(bx, by, cw, ch);
-        ctx.fillStyle = '#f0bf34';
-        ctx.fillRect(bx + 8, by + 7, 10, 10);
-        ctx.fillStyle = '#d59a1e';
-        ctx.fillRect(bx + 18, by + 9, 3, 10);
-        ctx.fillStyle = '#6e9d35';
-        ctx.fillRect(bx + 6, by + 14, 2, 5);
-        ctx.fillStyle = '#d0d0ff';
-        ctx.font = 'bold 12px monospace';
+        const cw = 154;
+        const ch = 30;
+        const bx = CANVAS_W / 2 - cw - 6;
+        const by = 62;
+        drawPixelFrame(ctx, bx, by, cw, ch, '#f0bf34', '#15172c');
+        drawCornIcon(ctx, bx + 12, by + 6, 0.62);
+        ctx.fillStyle = '#fff7dc';
+        ctx.font = 'bold 13px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText(`MILHO ${stageCorn}/${stageCornTarget}`, bx + 24, by + 16);
+        ctx.fillText(`META ${stageCorn}/${stageCornTarget}`, bx + 40, by + 20);
     }
     // ─── Corn Bank + Shield status bar ───
-    const barW = 240;
-    const barH = 28;
-    const barX = CANVAS_W / 2 - barW / 2;
-    const barY = 86;
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(barX, barY, barW, barH);
-    ctx.strokeStyle = '#4a4a6a';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(barX, barY, barW, barH);
+    const barW = 218;
+    const barH = 30;
+    const barX = CANVAS_W / 2 + 6;
+    const barY = 62;
+    drawPixelFrame(ctx, barX, barY, barW, barH, shieldActive ? '#7ee8a2' : '#4a4a6a', '#15172c');
     // Corn bank (left side)
-    ctx.fillStyle = '#f0bf34';
-    ctx.font = 'bold 12px monospace';
+    drawCornIcon(ctx, barX + 12, barY + 6, 0.62);
+    ctx.fillStyle = '#ffe066';
+    ctx.font = 'bold 13px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(`BANCO: ${cornBank || 0}`, barX + 10, barY + 18);
+    ctx.fillText(`BANCO ${cornBank || 0}`, barX + 40, barY + 20);
     // Shield status (right side)
     const canShield = (cornBank || 0) >= 3;
+    drawShieldIcon(ctx, barX + 110, barY + 5, 0.62, shieldActive || canShield);
     if (shieldActive) {
         ctx.fillStyle = '#7ee8a2';
-        ctx.fillText('ESCUDO ATIVO', barX + barW - 120, barY + 18);
+        ctx.fillText('ATIVO', barX + 138, barY + 20);
     } else if (canShield) {
-        ctx.fillStyle = '#d0d0ff';
-        ctx.fillText('SPC:ESCUDO', barX + barW - 108, barY + 18);
+        ctx.fillStyle = '#eef0ff';
+        ctx.fillText('ESP 3', barX + 138, barY + 20);
     } else {
-        ctx.fillStyle = '#6a6a8a';
-        ctx.fillText('ESCUDO ---', barX + barW - 108, barY + 18);
+        ctx.fillStyle = '#7b7f9d';
+        ctx.fillText('ESP 3', barX + 138, barY + 20);
     }
 }
 
@@ -849,11 +951,24 @@ function laneY(row, camRow, CANVAS_H) {
 }
 
 // â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function normalizeMoveKey(key) {
+    const k = key.toLowerCase();
+    if (k === 'arrowup' || k === 'w' || k === 'up') return 'up';
+    if (k === 'arrowdown' || k === 's' || k === 'down') return 'down';
+    if (k === 'arrowleft' || k === 'a' || k === 'left') return 'left';
+    if (k === 'arrowright' || k === 'd' || k === 'right') return 'right';
+    return null;
+}
+
 export default function Game() {
     const canvasRef = useRef(null);
     const stateRef = useRef(null);
     const hiRef = useRef(0);
     const rafRef = useRef(null);
+    const rankingSaveLockRef = useRef(false);
+    const pressedMoveKeysRef = useRef(new Set());
+    const moveKeyOrderRef = useRef([]);
+    const queuedMoveDirRef = useRef(null);
 
     const [dims, setDims] = useState({ w: window.innerWidth, h: window.innerHeight, cols: 9 });
     const [phase, setPhase] = useState('start');       // start | playing | stageclear | gameover | victory
@@ -863,6 +978,11 @@ export default function Game() {
     const [stageCorn, setStageCorn] = useState(0);
     const [totalCorn, setTotalCorn] = useState(0);
     const [cornBank, setCornBank] = useState(0);
+
+    const [playerName, setPlayerName] = useState('');
+    const [rankingSaved, setRankingSaved] = useState(false);
+    const [finalScore, setFinalScore] = useState(0);
+    const [rankingList, setRankingList] = useState([]);
 
     const stageCfg = STAGES[stageIdx];
 
@@ -881,6 +1001,20 @@ export default function Game() {
         return () => window.removeEventListener('resize', updateDims);
     }, [updateDims]);
 
+    useEffect(() => {
+        if (phase === 'gameover' || phase === 'victory') {
+            const currentScore = stateRef.current ? stateRef.current.score : score;
+            const currentCorn = stateRef.current ? stateRef.current.totalCorn : totalCorn;
+            setFinalScore(currentScore + currentCorn * 5);
+            rankingSaveLockRef.current = false;
+            setRankingSaved(false);
+            setPlayerName('');
+            setRankingList(getRanking());
+        } else if (phase === 'start') {
+            setRankingList(getRanking());
+        }
+    }, [phase, score, totalCorn]);
+
     const makeInitialState = useCallback((sIdx, w, cols, carryTotalCorn = 0, carryCornBank = 0) => {
         const cfg = STAGES[sIdx];
         const lanes = [];
@@ -898,7 +1032,6 @@ export default function Game() {
                 hopT: 1,
                 targetCol: Math.floor(cols / 2),
                 targetRow: 1,
-                inputBuffer: null,
                 shield: false,
                 invincibleUntil: 0,
             },
@@ -909,7 +1042,7 @@ export default function Game() {
             maxRow: 1,
             frozen: false,
             cameraRow: 1,
-            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null, shieldBreak: null, cornWarningUntil: 0, shieldWarningUntil: 0 },
+            fx: { scorePopUntil: 0, hit: null, cornPopUntil: 0, cornBurst: null, shieldBreak: null, cornBonusUntil: 0, shieldWarningUntil: 0 },
         };
     }, []);
 
@@ -926,17 +1059,37 @@ export default function Game() {
         }
     }, [dims.w]);
 
+    const clearMovementKeys = useCallback(() => {
+        pressedMoveKeysRef.current.clear();
+        moveKeyOrderRef.current = [];
+        queuedMoveDirRef.current = null;
+    }, []);
+
+    const getActiveMoveDir = useCallback(() => {
+        const order = moveKeyOrderRef.current;
+        for (let i = order.length - 1; i >= 0; i--) {
+            const key = order[i];
+            if (pressedMoveKeysRef.current.has(key)) return normalizeMoveKey(key);
+        }
+        return null;
+    }, []);
+
     const resetGame = useCallback(() => {
+        clearMovementKeys();
         stateRef.current = makeInitialState(0, dims.w, dims.cols, 0, 0);
         setScore(0);
         setStageIdx(0);
         setStageCorn(0);
         setTotalCorn(0);
         setCornBank(0);
+        rankingSaveLockRef.current = false;
+        setRankingSaved(false);
+        setPlayerName('');
         setPhase('playing');
-    }, [dims.w, dims.cols, makeInitialState]);
+    }, [dims.w, dims.cols, makeInitialState, clearMovementKeys]);
 
     const advanceStage = useCallback(() => {
+        clearMovementKeys();
         const nextIdx = stageIdx + 1;
         const s = stateRef.current;
         stateRef.current = makeInitialState(nextIdx, dims.w, dims.cols, s.totalCorn, s.cornBank);
@@ -946,22 +1099,44 @@ export default function Game() {
         setCornBank(stateRef.current.cornBank);
         setStageIdx(nextIdx);
         setPhase('playing');
-    }, [stageIdx, dims.w, dims.cols, makeInitialState]);
+    }, [stageIdx, dims.w, dims.cols, makeInitialState, clearMovementKeys]);
+
+    const handleSaveRanking = useCallback(() => {
+        if (rankingSaved || rankingSaveLockRef.current) return;
+        rankingSaveLockRef.current = true;
+        const nameToSave = playerName.trim() || 'Jogador';
+        const reachedStage = STAGES[stageIdx];
+        const entry = {
+            name: nameToSave.substring(0, 12),
+            score: finalScore,
+            stage: reachedStage ? (reachedStage.name || reachedStage.id) : stageIdx + 1,
+            corn: stateRef.current ? stateRef.current.totalCorn : totalCorn,
+            date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        };
+        const updatedRanking = saveRanking(entry);
+        setRankingList(updatedRanking);
+        setRankingSaved(true);
+    }, [playerName, finalScore, stageIdx, totalCorn, rankingSaved]);
+
+    const handleClearRanking = useCallback(() => {
+        if (!window.confirm('Limpar o ranking local da feira?')) return;
+        setRankingList(clearRanking());
+    }, []);
 
     const triggerMove = useCallback((key, cfg) => {
         const s = stateRef.current;
         if (s.frozen || s.player.hopT < 1) return;
         const p = s.player;
-        const k = key.toLowerCase();
+        const dir = normalizeMoveKey(key);
+        if (!dir) return;
         let nc = p.col, nr = p.row;
-        if (k === 'arrowup' || k === 'w') nr = p.row + 1;
-        if (k === 'arrowdown' || k === 's') nr = Math.max(0, p.row - 1);
-        if (k === 'arrowleft' || k === 'a') nc = Math.max(0, p.col - 1);
-        if (k === 'arrowright' || k === 'd') nc = Math.min(dims.cols - 1, p.col + 1);
+        if (dir === 'up') nr = p.row + 1;
+        if (dir === 'down') nr = Math.max(0, p.row - 1);
+        if (dir === 'left') nc = Math.max(0, p.col - 1);
+        if (dir === 'right') nc = Math.min(dims.cols - 1, p.col + 1);
         if (nc === p.col && nr === p.row) return;
         ensureLanes(s, cfg);
         p.targetCol = nc; p.targetRow = nr; p.hopT = 0;
-        p.inputBuffer = null;
     }, [dims.cols, ensureLanes]);
 
     const loop = useCallback((time) => {
@@ -987,7 +1162,7 @@ export default function Game() {
         // 2. Update Player Hop
         const p = s.player;
         if (p.hopT < 1) {
-            p.hopT = Math.min(1, p.hopT + 0.12);
+            p.hopT = Math.min(1, p.hopT + 0.14);
             if (p.hopT >= 1) {
                 p.col = p.targetCol;
                 p.row = p.targetRow;
@@ -1011,26 +1186,35 @@ export default function Game() {
                     const collectX = p.col * TILE + TILE / 2;
                     const cseed = (((p.row + 3) * 15331) ^ ((p.col + 11) * 9176) ^ ((time | 0) * 37)) >>> 0;
                     s.fx.cornBurst = { t0: time, x: collectX, y: collectY, particles: makeCornParticles(cseed) };
+                    if (s.stageCorn === cfg.cornTarget) {
+                        s.fx.cornBonusUntil = time + 1500;
+                    }
                     setStageCorn(s.stageCorn);
                     setTotalCorn(s.totalCorn);
                     setCornBank(s.cornBank);
                 }
                 // Goal reached?
                 if (p.row >= cfg.goalRow && !s.frozen) {
-                    if (s.stageCorn < cfg.cornTarget) {
-                        s.fx.cornWarningUntil = time + 1500;
+                    clearMovementKeys();
+                    s.frozen = true;
+                    if (stageIdx >= STAGES.length - 1) {
+                        setPhase('victory');
                     } else {
-                        s.frozen = true;
-                        if (stageIdx >= STAGES.length - 1) {
-                            setPhase('victory');
-                        } else {
-                            setPhase('stageclear');
-                        }
+                        setPhase('stageclear');
                     }
                 }
+                if (!s.frozen && phase === 'playing') {
+                    const queuedDir = queuedMoveDirRef.current;
+                    queuedMoveDirRef.current = null;
+                    const activeDir = queuedDir || getActiveMoveDir();
+                    if (activeDir) triggerMove(activeDir, cfg);
+                }
             }
-        } else if (p.inputBuffer && !s.frozen) {
-            triggerMove(p.inputBuffer, cfg);
+        } else if (!s.frozen && phase === 'playing') {
+            const queuedDir = queuedMoveDirRef.current;
+            queuedMoveDirRef.current = null;
+            const activeDir = queuedDir || getActiveMoveDir();
+            if (activeDir) triggerMove(activeDir, cfg);
         }
 
         // 3. Continuous Collision Detection (Every Frame)
@@ -1047,6 +1231,7 @@ export default function Game() {
                     const cseed = (((p.row + 3) * 15331) ^ ((time | 0) * 37)) >>> 0;
                     s.fx.shieldBreak = { t0: time, x: impactX, y: impactY, particles: makeShieldParticles(cseed) };
                 } else {
+                    clearMovementKeys();
                     const seed = (((p.row + 1) * 92821) ^ ((p.col + 7) * 68917) ^ ((time | 0) * 131)) >>> 0;
                     s.fx.hit = { t0: time, x: impactX, y: impactY, particles: makeImpactParticles(seed) };
                     s.frozen = true;
@@ -1075,7 +1260,7 @@ export default function Game() {
             } else if (ln.type === 'grass') {
                 drawGrassLane(ctx, sy, ln.shade, ln.trees, w, r);
                 drawStageFlavor(ctx, sy, w, r, cfg);
-                if (ln.cornCol !== null && !ln.cornTaken) drawCorn(ctx, ln.cornCol, sy);
+                if (ln.cornCol !== null && !ln.cornTaken) drawCorn(ctx, ln.cornCol, sy, time);
             } else {
                 drawRoadLane(ctx, sy, ln.shade, w, r);
                 ln.cars.forEach(c => drawCar(ctx, c.x, sy, ln.dir, c.color, c.variant));
@@ -1099,11 +1284,11 @@ export default function Game() {
         const scorePop = s.fx.scorePopUntil > time ? (s.fx.scorePopUntil - time) / 260 : 0;
         drawHUD(ctx, s.score, hiRef.current, w, scorePop, `FASE ${cfg.id} - ${cfg.name}`, s.stageCorn, cfg.cornTarget, s.cornBank, p.shield);
         
-        if (s.fx.cornWarningUntil > time) {
-            ctx.fillStyle = '#ff4455';
+        if (s.fx.cornBonusUntil > time) {
+            ctx.fillStyle = '#ffe066';
             ctx.font = 'bold 20px monospace';
             ctx.textAlign = 'center';
-            ctx.fillText(`COLETE MAIS ${cfg.cornTarget - s.stageCorn} MILHO!`, w / 2, h / 2 - 40);
+            ctx.fillText('META DE MILHO COMPLETA!', w / 2, h / 2 - 40);
         }
         if (s.fx.shieldWarningUntil > time) {
             ctx.fillStyle = '#f0bf34';
@@ -1117,7 +1302,7 @@ export default function Game() {
         if (s.fx.hit && drawImpactFX(ctx, s.fx.hit, time)) s.fx.hit = null;
 
         rafRef.current = requestAnimationFrame(loop);
-    }, [dims, phase, stageIdx, triggerMove]);
+    }, [dims, phase, stageIdx, triggerMove, getActiveMoveDir, clearMovementKeys]);
 
     function isSafe(s, w, time) {
         const p = s.player;
@@ -1136,15 +1321,36 @@ export default function Game() {
     }
 
     useEffect(() => {
-        const onKey = e => {
+        const onKeyDown = e => {
+            if (e.target.tagName && e.target.tagName.toLowerCase() === 'input') {
+                clearMovementKeys();
+                return;
+            }
+            
             const s = stateRef.current;
             const key = e.key.toLowerCase();
-            const isGameKey = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', ' '].includes(key);
+            const moveDir = normalizeMoveKey(key);
+            const isGameKey = Boolean(moveDir) || key === ' ';
+
+            if (moveDir) {
+                e.preventDefault();
+                const wasPressed = pressedMoveKeysRef.current.has(key);
+                pressedMoveKeysRef.current.add(key);
+                if (!e.repeat && !wasPressed) {
+                    moveKeyOrderRef.current = moveKeyOrderRef.current.filter(k => k !== key);
+                    moveKeyOrderRef.current.push(key);
+                }
+            }
+
             if (phase === 'start') { if (isGameKey) setPhase('playing'); return; }
-            if (phase === 'gameover') { if (key === ' ' || key === 'enter') resetGame(); return; }
+            if (phase === 'gameover') { if ((key === ' ' || key === 'enter') && rankingSaved) resetGame(); return; }
             if (phase === 'stageclear') { if (key === ' ' || key === 'enter') advanceStage(); return; }
-            if (phase === 'victory') { if (key === ' ' || key === 'enter') resetGame(); return; }
+            if (phase === 'victory') { if ((key === ' ' || key === 'enter') && rankingSaved) resetGame(); return; }
             if (s.frozen) return;
+
+            if (moveDir && phase === 'playing' && s.player.hopT < 1) {
+                queuedMoveDirRef.current = moveDir;
+            }
 
             // Shield activation
             if (key === ' ' && phase === 'playing') {
@@ -1158,15 +1364,28 @@ export default function Game() {
                 return;
             }
 
-            if (isGameKey) {
-                e.preventDefault();
-                if (s.player.hopT < 1) { s.player.inputBuffer = key; }
-                else { triggerMove(key, STAGES[stageIdx]); }
+            if (moveDir && s.player.hopT >= 1) {
+                const activeDir = getActiveMoveDir();
+                if (activeDir) triggerMove(activeDir, STAGES[stageIdx]);
             }
         };
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, [phase, resetGame, advanceStage, triggerMove, stageIdx]);
+
+        const onKeyUp = e => {
+            const key = e.key.toLowerCase();
+            if (!normalizeMoveKey(key)) return;
+            pressedMoveKeysRef.current.delete(key);
+            moveKeyOrderRef.current = moveKeyOrderRef.current.filter(k => k !== key);
+        };
+
+        window.addEventListener('keydown', onKeyDown);
+        window.addEventListener('keyup', onKeyUp);
+        window.addEventListener('blur', clearMovementKeys);
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+            window.removeEventListener('blur', clearMovementKeys);
+        };
+    }, [phase, resetGame, advanceStage, triggerMove, stageIdx, rankingSaved, clearMovementKeys, getActiveMoveDir]);
 
     useEffect(() => {
         rafRef.current = requestAnimationFrame(loop);
@@ -1174,6 +1393,21 @@ export default function Game() {
     }, [phase, loop]);
 
     const nextStage = STAGES[stageIdx + 1];
+    const renderRankingRows = (limit = 10) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {rankingList.slice(0, limit).map((r, i) => (
+                <div key={`${r.name}-${r.score}-${r.date}-${i}`} style={{ fontFamily: 'monospace', fontSize: 13, color: i < 3 ? '#ffe066' : '#bbb' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+                        <span>{i + 1}. {r.name}</span>
+                        <span style={{ fontWeight: 'bold' }}>{r.score}</span>
+                    </div>
+                    <div style={{ color: '#6f6f92', fontSize: 10, marginTop: 2 }}>
+                        {r.stage} | {r.corn} milhos{r.date ? ` | ${r.date}` : ''}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#0d1117', userSelect: 'none', overflow: 'hidden' }}>
@@ -1182,26 +1416,48 @@ export default function Game() {
             {phase !== 'playing' && (
                 <div style={OVL}>
                     {phase === 'start' && (
-                        <div style={PANEL}>
+                        <div style={{...PANEL, maxWidth: 800, padding: '36px 48px'}}>
                             <div style={TITLE}>HOP STREET</div>
-                            <p style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 13, marginBottom: 6, textAlign: 'center' }}>
+                            <p style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 14, marginBottom: 6, textAlign: 'center' }}>
                                 Ajude a galinha a chegar ao <b style={{ color: '#ffe066' }}>Festival do Milho</b>
                             </p>
-                            <p style={{ color: '#6a6a8a', fontFamily: 'monospace', fontSize: 12, marginBottom: 10 }}>
-                                Colete milhos nas areas seguras pelo caminho
-                            </p>
-                            <div style={{ display: 'flex', gap: 10, marginBottom: 24, marginTop: 8 }}>
-                                {STAGES.map((s, i) => (
-                                    <div key={i} style={{ background: '#1a1a3a', border: '2px solid #4a4a6a', borderRadius: 8, padding: '6px 12px', fontFamily: 'monospace', fontSize: 11, color: '#aaa', textAlign: 'center' }}>
-                                        <div style={{ color: s.accent, fontWeight: 900 }}>FASE {s.id}</div>
-                                        <div>{s.name}</div>
+                            
+                            <div style={{ display: 'flex', gap: 40, marginTop: 24, textAlign: 'left', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 300 }}>
+                                        {STAGES.map((s, i) => (
+                                            <div key={i} style={{ background: '#1a1a3a', border: '2px solid #4a4a6a', borderRadius: 8, padding: '6px 12px', fontFamily: 'monospace', fontSize: 11, color: '#aaa', textAlign: 'center' }}>
+                                                <div style={{ color: s.accent, fontWeight: 900 }}>FASE {s.id}</div>
+                                                <div>{s.name}</div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                    <div style={{ background: '#111', padding: '12px 20px', borderRadius: 8, border: '1px solid #333', marginBottom: 24, width: '100%' }}>
+                                        <h3 style={{ color: '#fff', fontFamily: 'monospace', marginBottom: 8, fontSize: 14 }}>CONTROLES:</h3>
+                                        <p style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 12, marginBottom: 4 }}><b>Setas/WASD:</b> Mover galinha</p>
+                                        <p style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 12, marginBottom: 0 }}><b>ESPACO:</b> Ativar Escudo (Custa 3 <span style={{ color: '#ffe066' }}>Milhos</span>)</p>
+                                    </div>
+                                    <button style={BTN} onClick={() => setPhase('playing')}>JOGAR AGORA</button>
+                                </div>
+                                
+                                <div style={{ background: '#151520', border: '2px solid #3a3a5a', borderRadius: 12, padding: '16px 20px', minWidth: 260, display: 'flex', flexDirection: 'column' }}>
+                                    <h3 style={{ color: '#f5be00', fontFamily: 'monospace', marginBottom: 12, textAlign: 'center', fontSize: 18 }}>TOP 10 LOCAL</h3>
+                                    {rankingList.length === 0 ? (
+                                        <p style={{ color: '#555', fontFamily: 'monospace', fontSize: 12, textAlign: 'center', margin: 'auto' }}>Nenhum recorde ainda.</p>
+                                    ) : (
+                                        renderRankingRows(10)
+                                    )}
+                                    {rankingList.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleClearRanking}
+                                            style={{ marginTop: 14, alignSelf: 'center', background: 'transparent', border: '1px solid #33364f', color: '#666985', fontFamily: 'monospace', fontSize: 10, padding: '5px 8px', borderRadius: 6, cursor: 'pointer' }}
+                                        >
+                                            LIMPAR RANKING
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                            <p style={{ color: '#6a6a8a', fontFamily: 'monospace', fontSize: 12, marginBottom: 24 }}>
-                                Setas ou WASD para mover
-                            </p>
-                            <button style={BTN} onClick={() => setPhase('playing')}>JOGAR</button>
                         </div>
                     )}
                     {phase === 'stageclear' && (
@@ -1213,8 +1469,11 @@ export default function Game() {
                                     Proxima: <b style={{ color: nextStage.accent }}>{nextStage.name}</b>
                                 </div>
                             )}
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 16 }}>
-                                Milho na fase: <b>{stageCorn}/{stageCfg.cornTarget}</b>
+                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 6 }}>
+                                Milhos coletados: <b>{stageCorn}/{stageCfg.cornTarget}</b>
+                            </div>
+                            <div style={{ color: stageCorn >= stageCfg.cornTarget ? '#7ee8a2' : '#8a8ab0', fontFamily: 'monospace', fontSize: 12, marginBottom: 16 }}>
+                                {stageCorn >= stageCfg.cornTarget ? 'Meta de milho completa!' : 'Colete mais na proxima para bonus'}
                             </div>
                             <button style={BTN} onClick={advanceStage}>CONTINUAR</button>
                             <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>
@@ -1226,26 +1485,81 @@ export default function Game() {
                             <div style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
                                 FASE <b style={{ color: stageCfg.accent }}>{stageCfg.id}</b> - {stageCfg.name}
                             </div>
-                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 28, margin: '10px 0 24px' }}>
-                                Score: <b style={{ color: '#ffe066' }}>{score}</b>
+                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
+                                Milhos Totais: <b>{stateRef.current?.totalCorn || 0}</b>
                             </div>
-                            <button style={BTN} onClick={resetGame}>RECOMECAR</button>
+                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '10px 0 20px' }}>
+                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                            </div>
+                            
+                            {!rankingSaved ? (
+                                <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Seu nome" 
+                                        maxLength={12}
+                                        value={playerName}
+                                        onChange={e => setPlayerName(e.target.value)}
+                                        onKeyDown={e => { if(e.key === 'Enter') handleSaveRanking(); }}
+                                        autoFocus
+                                        style={{ padding: '10px 16px', fontSize: 18, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 12, outline: 'none' }}
+                                    />
+                                    <button style={{...BTN, fontSize: 16, padding: '12px 24px'}} onClick={handleSaveRanking}>SALVAR NO RANKING</button>
+                                </div>
+                            ) : (
+                                <div style={{ marginBottom: 24, width: '100%', maxWidth: 300 }}>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 10, fontSize: 16 }}>PONTUAÇÃO SALVA!</h4>
+                                    <div style={{ background: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                        {renderRankingRows(10)}
+                                    </div>
+                                </div>
+                            )}
+
+                            {rankingSaved && <button style={BTN} onClick={resetGame}>JOGAR NOVAMENTE</button>}
+                            {rankingSaved && <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>}
                         </div>
                     )}
                     {phase === 'victory' && (
                         <div style={PANEL}>
-                            <div style={{ ...TITLE, color: '#f5be00', fontSize: 36 }}>VOCE CHEGOU AO FESTIVAL DO MILHO!</div>
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 18, marginBottom: 8 }}>HOP STREET</div>
+                            <div style={{ ...TITLE, color: '#f5be00', fontSize: 36 }}>FESTIVAL DO MILHO!</div>
                             <div style={{ color: '#8a8ab0', fontFamily: 'monospace', fontSize: 14, marginBottom: 6, textAlign: 'center' }}>
-                                Todas as fases concluidas
+                                Voce concluiu todas as fases!
                             </div>
-                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 6 }}>
-                                Total de milho: <b>{totalCorn}</b>
+                            <div style={{ color: '#aaa', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
+                                FASE <b style={{ color: stageCfg.accent }}>{stageCfg.name}</b>
                             </div>
-                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 28, margin: '10px 0 24px' }}>
-                                Score Final: <b style={{ color: '#ffe066' }}>{hiScore}</b>
+                            <div style={{ color: '#ffe066', fontFamily: 'monospace', fontSize: 14, marginBottom: 4 }}>
+                                Milhos Totais: <b>{stateRef.current?.totalCorn || totalCorn}</b>
                             </div>
-                            <button style={BTN} onClick={resetGame}>JOGAR NOVAMENTE</button>
+                            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 22, margin: '10px 0 20px' }}>
+                                Pontuação Final: <b style={{ color: '#ffe066' }}>{finalScore}</b>
+                            </div>
+
+                            {!rankingSaved ? (
+                                <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Seu nome" 
+                                        maxLength={12}
+                                        value={playerName}
+                                        onChange={e => setPlayerName(e.target.value)}
+                                        onKeyDown={e => { if(e.key === 'Enter') handleSaveRanking(); }}
+                                        autoFocus
+                                        style={{ padding: '10px 16px', fontSize: 18, fontFamily: 'monospace', borderRadius: 8, border: '2px solid #555', background: '#111', color: '#fff', textAlign: 'center', width: 220, marginBottom: 12, outline: 'none' }}
+                                    />
+                                    <button style={{...BTN, fontSize: 16, padding: '12px 24px'}} onClick={handleSaveRanking}>SALVAR NO RANKING</button>
+                                </div>
+                            ) : (
+                                <div style={{ marginBottom: 24, width: '100%', maxWidth: 300 }}>
+                                    <h4 style={{ color: '#7ee8a2', fontFamily: 'monospace', marginBottom: 10, fontSize: 16 }}>PONTUAÇÃO SALVA!</h4>
+                                    <div style={{ background: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                        {renderRankingRows(10)}
+                                    </div>
+                                </div>
+                            )}
+
+                            {rankingSaved && <button style={BTN} onClick={resetGame}>JOGAR NOVAMENTE</button>}
+                            {rankingSaved && <p style={{ color: '#5a5a7a', fontFamily: 'monospace', fontSize: 11, marginTop: 14 }}>ou pressione Espaco</p>}
                         </div>
                     )}
                 </div>
